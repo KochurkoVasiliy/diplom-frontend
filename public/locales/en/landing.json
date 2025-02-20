@@ -1,0 +1,9 @@
+{
+    "error":{
+        "header": "An error has occurred",
+        "subheader": "The page you requested was not found",
+        "action": {
+            "home": "Home"
+        }
+    }
+}
