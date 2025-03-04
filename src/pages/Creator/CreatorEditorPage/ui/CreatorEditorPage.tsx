@@ -1,4 +1,4 @@
-import {LeftFloatingBar} from '@/widgets';
+import {FloatingBottomBar, LeftFloatingBar} from '@/widgets';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
     EAnchorType,
@@ -76,8 +76,9 @@ export const CreatorEditorPage = () => {
         );
     };
     return (
-        <Flex width={'100%'}>
+        <Flex width={'100vw'} height={'100%'} style={{position: 'relative'}}>
             <LeftFloatingBar />
+            <FloatingBottomBar />
             <GraphCanvas
                 graph={graph}
                 renderBlock={renderBlockFn}

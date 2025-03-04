@@ -1,10 +1,39 @@
+import {Button, DropdownMenu, DropdownMenuItem, Flex, Icon} from '@gravity-ui/uikit';
 import {Suspense} from 'react';
+import {FolderArrowLeft, House, Plus} from '@gravity-ui/icons';
+
 import {Outlet} from 'react-router';
+
+const dropdownMenuItems: DropdownMenuItem[] = [
+    {
+        action: () => console.log('Rename'),
+        text: 'На главную',
+        iconStart: <Icon data={House} />,
+    },
+    {
+        action: () => console.log('Rename'),
+        text: 'К проектам',
+        iconStart: <Icon data={FolderArrowLeft} />,
+    },
+];
 
 export const CreatorLayout = () => {
     return (
         <Suspense>
-            <Outlet />
+            <Flex direction={'column'} height={'100%'}>
+                <Flex>
+                    <DropdownMenu size={'xl'} items={dropdownMenuItems} />
+                    <Button
+                        title={'Вернуться на страницу проектов'}
+                        view={'flat'}
+                        size={'xl'}
+                        pin={'brick-brick'}
+                    >
+                        <Icon size={18} data={Plus} />
+                    </Button>
+                </Flex>
+                <Outlet />
+            </Flex>
         </Suspense>
     );
 };
