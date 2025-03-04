@@ -19,6 +19,7 @@ export const viteBuild = async (options: ViteOptions): Promise<BuildEnvironmentO
                 chunkFileNames: '[name].[hash].js',
                 assetFileNames: 'assets/[hash][extname]',
             },
+            external: ['web-worker'],
         },
     };
 };

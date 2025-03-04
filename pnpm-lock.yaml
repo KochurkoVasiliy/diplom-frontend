@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@gravity-ui/graph':
+        specifier: ^0.2.1
+        version: 0.2.1(elkjs@0.9.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@gravity-ui/icons':
         specifier: ^2.12.0
         version: 2.12.0(react@19.0.0)
@@ -105,6 +108,9 @@ importers:
       vitest:
         specifier: ^3.0.4
         version: 3.0.4(@types/node@22.10.10)(sass-embedded@1.83.4)(sass@1.83.4)
+      web-worker:
+        specifier: ^1.5.0
+        version: 1.5.0
 
 packages:
 
@@ -448,6 +454,14 @@ packages:
       prettier:
         optional: true
 
+  '@gravity-ui/graph@0.2.1':
+    resolution: {integrity: sha512-yenbc9tsTlwTt+sJCXGSX40AlScCtKnEn2Y8afiZmcPoHsYgar/1ibAA7azEnB9YBga8S2MSbX0iqNenBj4qZQ==}
+    engines: {pnpm: Please use npm instead of pnpm to install dependencies, yarn: Please use npm instead of yarn to install dependencies}
+    peerDependencies:
+      elkjs: ^0.9.3
+      react: ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
+
   '@gravity-ui/i18n@1.7.0':
     resolution: {integrity: sha512-jZotOX73lMVARsNZ5L8rquDhyCIcHnX7GwT32m6vrnqy6iKBfBdOuAnAalUbnoVJoasfvYiSyX3kwusetyZgfQ==}
 
@@ -627,6 +641,9 @@ packages:
 
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
+
+  '@preact/signals-core@1.8.0':
+    resolution: {integrity: sha512-OBvUsRZqNmjzCZXWLxkZfhcgT+Fk8DDcT/8vD6a1xhDemodyy87UJRJfASMuSD8FaAIeGgGm85ydXhm7lr4fyA==}
 
   '@rollup/pluginutils@5.1.4':
     resolution: {integrity: sha512-USm05zrsFxYLPdWWq+K3STlWiT/3ELn3RcV5hJMghpeAIhxfsUIg6mt12CBJBInWMV4VneoV7SfGv8xIwo2qNQ==}
@@ -1281,6 +1298,9 @@ packages:
   electron-to-chromium@1.5.88:
     resolution: {integrity: sha512-K3C2qf1o+bGzbilTDCTBhTQcMS9KW60yTAaTeeXsfvQuTDDwlokLam/AdqlqcSy9u4UainDgsHV23ksXAOgamw==}
 
+  elkjs@0.9.3:
+    resolution: {integrity: sha512-f/ZeWvW/BCXbhGEf1Ujp29EASo/lk1FDnETgNKwJrsVvGZhUWCZyg3xLJjAsxfOmt8KjswHmI5EwCQcPMpOYhQ==}
+
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
@@ -1747,6 +1767,9 @@ packages:
     resolution: {integrity: sha512-4gd7VpWNQNB4UKKCFFVcp1AVv+FMOgs9NKzjHKusc8jTMhd5eL1NqQqOpE0KzMds804/yHlglp3uxgluOqAPLw==}
     engines: {node: '>= 0.4'}
 
+  intersects@2.7.2:
+    resolution: {integrity: sha512-/LtLDq40iFtvnjhouev9p2R+jP+raVONPiD1t8Mcj879pkrLiav99BTRPBkfMPwSYr5vTNws3USGoW+8usS45A==}
+
   is-array-buffer@3.0.5:
     resolution: {integrity: sha512-DDfANUiiG2wC1qawP66qlTugJeL5HyzMpfr8lLK+jMQirGzNod0B12cFB/9q838Ru27sBwfw78/rdoU7RERz6A==}
     engines: {node: '>= 0.4'}
@@ -1942,6 +1965,9 @@ packages:
   locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
+
+  lodash-es@4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -2225,8 +2251,14 @@ packages:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
 
+  quickselect@2.0.0:
+    resolution: {integrity: sha512-RKJ22hX8mHe3Y6wH/N3wCM6BWtjaxIyyUIkpHOvfFnxdI4yD4tBXEBKSbriGujF6jnSVkJrffuo6vxACiSSxIw==}
+
   raf-schd@4.0.3:
     resolution: {integrity: sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==}
+
+  rbush@3.0.1:
+    resolution: {integrity: sha512-XRaVO0YecOpEuIvbhbpTrZgoiI6xBlz6hnlr6EHhd+0x9ase6EmeN+hdwwUaJvLcsFFQ8iWVF1GAK1yB0BWi0w==}
 
   rc-slider@10.6.2:
     resolution: {integrity: sha512-FjkoFjyvUQWcBo1F3RgSglky3ar0+qHLM41PlFVYB4Bj3RD8E/Mv7kqMouLFBU+3aFglMzzctAIWRwajEuueSw==}
@@ -2973,6 +3005,9 @@ packages:
   warning@4.0.3:
     resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
 
+  web-worker@1.5.0:
+    resolution: {integrity: sha512-RiMReJrTAiA+mBjGONMnjVDP2u3p9R1vkcGz6gDIrOMT3oGuYwX2WRMYI9ipkphSuE5XKEhydbhNEJh4NY9mlw==}
+
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
@@ -3355,6 +3390,16 @@ snapshots:
       - supports-color
       - typescript
 
+  '@gravity-ui/graph@0.2.1(elkjs@0.9.3)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@preact/signals-core': 1.8.0
+      elkjs: 0.9.3
+      intersects: 2.7.2
+      lodash-es: 4.17.21
+      rbush: 3.0.1
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+
   '@gravity-ui/i18n@1.7.0': {}
 
   '@gravity-ui/icons@2.12.0(react@19.0.0)':
@@ -3517,6 +3562,8 @@ snapshots:
   '@pkgr/core@0.1.1': {}
 
   '@popperjs/core@2.11.8': {}
+
+  '@preact/signals-core@1.8.0': {}
 
   '@rollup/pluginutils@5.1.4(rollup@4.32.0)':
     dependencies:
@@ -4209,6 +4256,8 @@ snapshots:
 
   electron-to-chromium@1.5.88: {}
 
+  elkjs@0.9.3: {}
+
   emoji-regex@8.0.0: {}
 
   emoji-regex@9.2.2: {}
@@ -4825,6 +4874,8 @@ snapshots:
       hasown: 2.0.2
       side-channel: 1.1.0
 
+  intersects@2.7.2: {}
+
   is-array-buffer@3.0.5:
     dependencies:
       call-bind: 1.0.8
@@ -5012,6 +5063,8 @@ snapshots:
   locate-path@6.0.0:
     dependencies:
       p-locate: 5.0.0
+
+  lodash-es@4.17.21: {}
 
   lodash.merge@4.6.2: {}
 
@@ -5276,7 +5329,13 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
+  quickselect@2.0.0: {}
+
   raf-schd@4.0.3: {}
+
+  rbush@3.0.1:
+    dependencies:
+      quickselect: 2.0.0
 
   rc-slider@10.6.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -6104,6 +6163,8 @@ snapshots:
   warning@4.0.3:
     dependencies:
       loose-envify: 1.4.0
+
+  web-worker@1.5.0: {}
 
   webidl-conversions@3.0.1: {}
 
