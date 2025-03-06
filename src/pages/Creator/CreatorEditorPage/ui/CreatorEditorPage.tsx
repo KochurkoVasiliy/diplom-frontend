@@ -30,7 +30,7 @@ const config: HookGraphParams = {
     settings: {
         useBezierConnections: true,
         canCreateNewConnections: true,
-        useBlocksAnchors: true,
+        //useBlocksAnchors: true,
         canChangeBlockGeometry: ECanChangeBlockGeometry.ONLY_SELECTED,
         blockComponents: {},
         showConnectionArrows: true,

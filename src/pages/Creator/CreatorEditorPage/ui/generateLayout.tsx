@@ -17,19 +17,7 @@ export function createActionBlock(x: number, y: number, index: number): TGravity
         width: 63 * 2,
         height: 63 * 2,
         selected: false,
-        name: `Block #${index}`,
-        anchors: [
-            {
-                id: `${blockId}_in`,
-                blockId,
-                type: EAnchorType.IN,
-            },
-            {
-                id: `${blockId}_out`,
-                blockId,
-                type: EAnchorType.OUT,
-            },
-        ],
+        name: `Layer #${index}`,
         meta: {
             description: 'Description',
         },
@@ -47,24 +35,11 @@ export function createActionBlock1(x: number, y: number, index: number) {
         width: 63 * 2,
         height: 63 * 2,
         selected: false,
-        name: `Block #${index}`,
-        anchors: [
-            {
-                id: `${blockId}_in`,
-                blockId,
-                type: EAnchorType.IN,
-            },
-            {
-                id: `${blockId}_out`,
-                blockId,
-                type: EAnchorType.OUT,
-            },
-        ],
+        name: `Layer #${index}`,
         meta: {
             description: 'Layer',
             in_channels: 1,
             out_channels: 1,
-            kernel_size
         },
     };
 }
