@@ -1,0 +1,18 @@
+﻿.tree-node{
+    border-radius: var(--g-border-radius-s);
+    padding: var(--g-spacing-base);
+
+
+    &_selected{
+        background-color: var(--g-color-base-selection);
+    }
+
+    &__node-children{
+        padding-left: var(--g-spacing-7);
+
+        &_content{
+            align-items: center;
+            gap: var(--g-spacing-base);
+        }
+    }
+}

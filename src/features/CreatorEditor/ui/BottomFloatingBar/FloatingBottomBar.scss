@@ -1,0 +1,25 @@
+﻿.creator-bottom-bar{
+    position: fixed; // Фиксированное позиционирование
+    bottom: 24px; // Отступ от нижнего края экрана
+    left: 50%; // Смещение на 50% вправо
+    transform: translateX(-50%); // Смещение назад на 50% своей ширины для центрирования
+    z-index: 1000; // Убедитесь, что меню находится поверх других элементов
+    background-color: white; // Цвет фона
+    border-radius: 8px; // Закругленные углы
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Тень для эффекта "плавающего" элемента
+    padding: 8px; // Внутренний отступ
+
+    .g-button{
+        height: max-content;
+    }
+    &__button{
+
+        &-container{
+            padding: 4px;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}

@@ -1,8 +1,11 @@
 import {Button, DropdownMenu, DropdownMenuItem, Flex, Icon} from '@gravity-ui/uikit';
 import {Suspense} from 'react';
 import {FolderArrowLeft, House, Plus} from '@gravity-ui/icons';
-
 import {Outlet} from 'react-router';
+import block from 'bem-cn-lite';
+import './CreatorLayout.scss';
+
+const b = block('creator-layout');
 
 const dropdownMenuItems: DropdownMenuItem[] = [
     {
@@ -20,8 +23,8 @@ const dropdownMenuItems: DropdownMenuItem[] = [
 export const CreatorLayout = () => {
     return (
         <Suspense>
-            <Flex direction={'column'} height={'100%'}>
-                <Flex>
+            <Flex direction={'column'} className={b()}>
+                <Flex className={b('menu')}>
                     <DropdownMenu size={'xl'} items={dropdownMenuItems} />
                     <Button
                         title={'Вернуться на страницу проектов'}

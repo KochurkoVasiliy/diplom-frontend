@@ -1,94 +1,119 @@
-import {FloatingBottomBar, LeftFloatingBar} from '@/widgets';
+import {FloatingBottomBar, LeftFloatingBar} from '@/features';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
     EAnchorType,
     ECanChangeBlockGeometry,
-    GraphBlock,
+    ESelectionStrategy,
+    GraphBlock, GraphBlockAnchor,
     GraphCanvas,
     GraphState,
-    type TGraphConfig,
+    HookGraphParams, TBlock,
     useGraph,
 } from '@gravity-ui/graph';
-import {Flex} from '@gravity-ui/uikit';
-import React from 'react';
-const config: TGraphConfig = {
-    configurationName: 'sample',
-    cameraScale: 0.9,
-    connections: [],
+import {Box, Button, Flex} from '@gravity-ui/uikit';
+import React, {useCallback} from 'react';
+import {GraphProvider} from '@/app/providers';
+import block from 'bem-cn-lite';
+import './CreatorEditorPage.scss';
+import {RightFloatingBar} from '@/features/CreatorEditor/ui/RightFloatingBar/RightFloatingBar';
+import {createActionBlock, createActionBlock1} from "@/pages/Creator/CreatorEditorPage/ui/generateLayout";
+const b = block('creator-editor');
+
+const config: HookGraphParams = {
+    layers: undefined,
     settings: {
         useBezierConnections: true,
         canCreateNewConnections: true,
         canChangeBlockGeometry: ECanChangeBlockGeometry.ALL,
+        blockComponents: {},
+    },
+    viewConfiguration: {
+        constants: {
+            system: {
+                GRID_SIZE: 60,
+            },
+            block: {
+                SNAPPING_GRID_SIZE: 60,
+            },
+        },
     },
 };
 
 export const CreatorEditorPage = () => {
     const {graph, setEntities, start} = useGraph(config);
-
     React.useEffect(() => {
         setEntities({
-            blocks: [
-                {
-                    is: 'block',
-                    id: 'action_1',
-                    x: -100,
-                    y: 200,
-                    width: 126,
-                    height: 126,
-                    selected: false,
-                    name: 'conv2d_1',
-                    anchors: [
-                        {
-                            id: 'anchor-right-1',
-                            blockId: 'action_1',
-                            type: EAnchorType.OUT,
-                            index: 0,
-                        },
-                        {
-                            id: 'anchor-right-2',
-                            blockId: 'action_1',
-                            type: EAnchorType.IN,
-                            index: 1,
-                        },
-                    ],
-                },
-                {
-                    id: 'action_2',
-                    is: 'block-action',
-                    x: 253,
-                    y: 176,
-                    width: 126,
-                    height: 126,
-                    selected: false,
-                    name: 'conv2d_1',
-                    anchors: [],
-                },
-            ],
+            blocks: [createActionBlock(-100, 200, 1), createActionBlock1(-150, 250, 2)],
             connections: [],
         });
-    });
+        graph.api.selectBlocks(['layer_1'], true, ESelectionStrategy.APPEND);
+    }, []);
 
-    const renderBlockFn = (graph, block) => {
-        return (
-            <GraphBlock graph={graph} block={block}>
-                {block.id}
-            </GraphBlock>
-        );
+    const addBlock = useCallback(() => {
+        const newBlock = {
+            id: `block_${Date.now()}`, // Уникальный ID для блока
+            is: 'block-action', // Тип блока
+            x: 0, // Позиция X
+            y: 0, // Позиция Y
+            width: 120, // Ширина блока
+            height: 120, // Высота блока
+            selected: false, // Выделен ли блок
+            name: 'New Block', // Имя блока
+            anchors: [], // Якоря блока
+        };
+
+        // Получаем текущие блоки и соединения
+        graph.api.addBlock(newBlock);
+    }, []);
+
+    const x = () => {
+        graph.api.deleteSelected();
     };
     return (
-        <Flex width={'100vw'} height={'100%'} style={{position: 'relative'}}>
-            <LeftFloatingBar />
-            <FloatingBottomBar />
-            <GraphCanvas
-                graph={graph}
-                renderBlock={renderBlockFn}
-                onStateChanged={({state}) => {
-                    if (state === GraphState.ATTACHED) {
-                        start();
-                        graph.zoomTo('center', {padding: 300});
-                    }
-                }}
-            />
-        </Flex>
+        <GraphProvider graph={graph}>
+            <Flex className={b()} width={'100%'} height={'100%'} style={{position: 'relative'}}>
+                <LeftFloatingBar />
+                <FloatingBottomBar />
+                <RightFloatingBar />
+                <GraphCanvas
+                    className={b('graph-canvas')}
+                    graph={graph}
+                    renderBlock={renderBlockFn}
+                    onStateChanged={({state}) => {
+                        if (state === GraphState.ATTACHED) {
+                            start();
+                            graph.zoomTo('center', {padding: 300});
+                        }
+                    }}
+                />
+            </Flex>
+        </GraphProvider>
+    );
+};
+
+const renderBlockFn = (graph, block: TBlock) => {
+    if(block.is === 'block-action') {
+        return (
+            <GraphBlock graph={graph} block={block}>
+                <Flex style={{padding: 24}}>{block.meta?.description}</Flex>
+                {block.anchors.map((anchor) => {
+                    return (
+                        <GraphBlockAnchor
+                            className="block-anchor"
+                            key={anchor.id}
+                            position="absolute"
+                            graph={graph}
+                            anchor={anchor}
+                        />
+                    );
+                })}
+            </GraphBlock>
+        )
+    }
+
+    return (
+        <GraphBlock graph={graph} block={block}>
+            <Flex style={{padding: 24}}>{block.meta.description}</Flex>
+        </GraphBlock>
     );
 };

@@ -1,0 +1,21 @@
+﻿.left-floating-bar{
+    z-index: 10;
+    min-width: 15%;
+    border-right: 1px solid var(--g-color-line-generic);
+    box-shadow: 8px 0 24 var(--g-color-sfx-shadow);
+
+    &__tree-container{
+        width: 100%;
+        padding: var(--g-spacing-1);
+        user-select: none;
+
+        &_header{
+            padding: var(--g-spacing-2) 0;
+            padding-left: var(--g-spacing-1);
+        }
+    }
+
+    &__tree-button{
+
+    }
+}
