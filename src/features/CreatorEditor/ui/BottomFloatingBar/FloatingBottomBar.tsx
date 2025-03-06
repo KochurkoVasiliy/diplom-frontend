@@ -5,7 +5,7 @@ import './FloatingBottomBar.scss';
 import React, {useCallback} from 'react';
 import {useGraphContext} from '@/app/providers';
 import {SelectionEvent} from '@gravity-ui/graph/build/graphEvents';
-import {TBlockId} from '@gravity-ui/graph';
+import {TBlockId, TConnection} from '@gravity-ui/graph';
 const b = block('creator-bottom-bar');
 
 const captionText = text({variant: 'caption-2'});
@@ -36,7 +36,12 @@ export const FloatingBottomBar = () => {
             setSelectedBlockId(event.detail.list);
         };
 
+        const handleSelectionChangeConnection = (event: SelectionEvent<TConnection>) => {
+
+        };
+
         graph.on('blocks-selection-change', handleSelectionChange);
+        graph.on('connection-selection-change', handleSelectionChangeConnection)
         console.log(graph.rootStore.blocksList.$selectedBlocks);
         return () => {
             graph.off('blocks-selection-change', handleSelectionChange);

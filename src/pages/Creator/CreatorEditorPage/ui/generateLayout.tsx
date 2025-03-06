@@ -61,7 +61,10 @@ export function createActionBlock1(x: number, y: number, index: number) {
             },
         ],
         meta: {
-            description: 'Description',
+            description: 'Layer',
+            in_channels: 1,
+            out_channels: 1,
+            kernel_size
         },
     };
 }

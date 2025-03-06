@@ -4,5 +4,8 @@
     &__menu{
         border-bottom: 1px solid var(--g-color-line-generic);
         box-shadow: 8px 0 24 var(--g-color-sfx-shadow);
+        align-items: center;
+        justify-content: space-between;
+        padding-right: var(--g-spacing-2);
     }
 }

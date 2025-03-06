@@ -14,7 +14,9 @@ export const LeftFloatingBar = () => {
     const {graph, subscribeToDelete, unsubscribeFromDelete, deleteSelected} = useGraphContext();
 
     React.useEffect(() => {
-        const handleSelectionChange = (event: SelectionEvent<TBlockId>) => {};
+        const handleSelectionChange = (event: SelectionEvent<TBlockId>) => {
+            console.log(graph.rootStore.getAsConfig());
+        };
 
         graph.on('blocks-selection-change', handleSelectionChange);
         return () => {

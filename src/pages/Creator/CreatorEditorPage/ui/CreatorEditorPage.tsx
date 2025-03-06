@@ -4,19 +4,25 @@ import {
     EAnchorType,
     ECanChangeBlockGeometry,
     ESelectionStrategy,
-    GraphBlock, GraphBlockAnchor,
+    GraphBlock,
+    GraphBlockAnchor,
     GraphCanvas,
     GraphState,
-    HookGraphParams, TBlock,
+    HookGraphParams,
+    TBlock,
     useGraph,
 } from '@gravity-ui/graph';
-import {Box, Button, Flex} from '@gravity-ui/uikit';
+import {Box, Button, Flex, Icon, Text} from '@gravity-ui/uikit';
 import React, {useCallback} from 'react';
 import {GraphProvider} from '@/app/providers';
 import block from 'bem-cn-lite';
 import './CreatorEditorPage.scss';
 import {RightFloatingBar} from '@/features/CreatorEditor/ui/RightFloatingBar/RightFloatingBar';
-import {createActionBlock, createActionBlock1} from "@/pages/Creator/CreatorEditorPage/ui/generateLayout";
+import {
+    createActionBlock,
+    createActionBlock1,
+} from '@/pages/Creator/CreatorEditorPage/ui/generateLayout';
+import {Layers3Diagonal} from '@gravity-ui/icons';
 const b = block('creator-editor');
 
 const config: HookGraphParams = {
@@ -24,8 +30,11 @@ const config: HookGraphParams = {
     settings: {
         useBezierConnections: true,
         canCreateNewConnections: true,
-        canChangeBlockGeometry: ECanChangeBlockGeometry.ALL,
+        useBlocksAnchors: true,
+        canChangeBlockGeometry: ECanChangeBlockGeometry.ONLY_SELECTED,
         blockComponents: {},
+        showConnectionArrows: true,
+        showConnectionLabels: true,
     },
     viewConfiguration: {
         constants: {
@@ -92,23 +101,34 @@ export const CreatorEditorPage = () => {
 };
 
 const renderBlockFn = (graph, block: TBlock) => {
-    if(block.is === 'block-action') {
+    if (block.is === 'block-action' || block.is === 'aaa') {
         return (
-            <GraphBlock graph={graph} block={block}>
-                <Flex style={{padding: 24}}>{block.meta?.description}</Flex>
-                {block.anchors.map((anchor) => {
-                    return (
-                        <GraphBlockAnchor
-                            className="block-anchor"
-                            key={anchor.id}
-                            position="absolute"
-                            graph={graph}
-                            anchor={anchor}
-                        />
-                    );
-                })}
+            <GraphBlock
+                graph={graph}
+                block={block}
+                containerClassName={'GraphBlock'}
+                className={'GraphBlock__container'}
+            >
+                <Flex className={'GraphBlock__wrapper'}>
+                    <Flex className={'block-content__name'}>
+                        <Text variant={'subheader-1'}>{block.name}</Text>
+                        <Icon data={Layers3Diagonal} />
+                    </Flex>
+                </Flex>
+                {/*{block.anchors.map((anchor) => {*/}
+                {/*    return (*/}
+                {/*        <GraphBlockAnchor*/}
+                {/*            className="block-anchor"*/}
+                {/*            key={anchor.id}*/}
+                {/*            position="absolute"*/}
+                {/*            graph={graph}*/}
+
+                {/*            anchor={anchor}*/}
+                {/*        />*/}
+                {/*    );*/}
+                {/*})}*/}
             </GraphBlock>
-        )
+        );
     }
 
     return (
