@@ -14,7 +14,7 @@ import {
 } from '@gravity-ui/graph';
 import {Box, Button, Flex, Icon, Text} from '@gravity-ui/uikit';
 import React, {useCallback} from 'react';
-import {GraphProvider} from '@/app/providers';
+import {GraphProvider, useGraphContext} from '@/app/providers';
 import block from 'bem-cn-lite';
 import './CreatorEditorPage.scss';
 import {RightFloatingBar} from '@/features/CreatorEditor/ui/RightFloatingBar/RightFloatingBar';
@@ -25,36 +25,10 @@ import {
 import {Layers3Diagonal} from '@gravity-ui/icons';
 const b = block('creator-editor');
 
-const config: HookGraphParams = {
-    layers: undefined,
-    settings: {
-        useBezierConnections: true,
-        canCreateNewConnections: true,
-        //useBlocksAnchors: true,
-        canChangeBlockGeometry: ECanChangeBlockGeometry.ONLY_SELECTED,
-        blockComponents: {},
-        showConnectionArrows: true,
-        showConnectionLabels: true,
-    },
-    viewConfiguration: {
-        constants: {
-            system: {
-                GRID_SIZE: 60,
-            },
-            block: {
-                SNAPPING_GRID_SIZE: 60,
-            },
-        },
-    },
-};
-
 export const CreatorEditorPage = () => {
-    const {graph, setEntities, start} = useGraph(config);
+    const {graph, start} = useGraphContext();
     React.useEffect(() => {
-        setEntities({
-            blocks: [createActionBlock(-100, 200, 1), createActionBlock1(-150, 250, 2)],
-            connections: [],
-        });
+        graph.api.addBlock(createActionBlock(-100, 200, 1));
         graph.api.selectBlocks(['layer_1'], true, ESelectionStrategy.APPEND);
     }, []);
 
@@ -79,61 +53,43 @@ export const CreatorEditorPage = () => {
         graph.api.deleteSelected();
     };
     return (
-        <GraphProvider graph={graph}>
-            <Flex className={b()} width={'100%'} height={'100%'} style={{position: 'relative'}}>
-                <LeftFloatingBar />
-                <FloatingBottomBar />
-                <RightFloatingBar />
-                <GraphCanvas
-                    className={b('graph-canvas')}
-                    graph={graph}
-                    renderBlock={renderBlockFn}
-                    onStateChanged={({state}) => {
-                        if (state === GraphState.ATTACHED) {
-                            start();
-                            graph.zoomTo('center', {padding: 300});
-                        }
-                    }}
-                />
-            </Flex>
-        </GraphProvider>
+        <Flex className={b()} width={'100%'} height={'100%'} style={{position: 'relative'}}>
+            <LeftFloatingBar />
+            <FloatingBottomBar />
+            <RightFloatingBar />
+            <GraphCanvas
+                className={b('graph-canvas')}
+                graph={graph}
+                renderBlock={renderBlockFn}
+                onStateChanged={({state}) => {
+                    if (state === GraphState.ATTACHED) {
+                        start();
+                        graph.zoomTo('center', {padding: 300});
+                    }
+                }}
+            />
+        </Flex>
     );
 };
 
 const renderBlockFn = (graph, block: TBlock) => {
-    if (block.is === 'block-action' || block.is === 'aaa') {
-        return (
-            <GraphBlock
-                graph={graph}
-                block={block}
-                containerClassName={'GraphBlock'}
-                className={'GraphBlock__container'}
-            >
-                <Flex className={'GraphBlock__wrapper'}>
-                    <Flex className={'block-content__name'}>
-                        <Text variant={'subheader-1'}>{block.name}</Text>
-                        <Icon data={Layers3Diagonal} />
-                    </Flex>
-                </Flex>
-                {/*{block.anchors.map((anchor) => {*/}
-                {/*    return (*/}
-                {/*        <GraphBlockAnchor*/}
-                {/*            className="block-anchor"*/}
-                {/*            key={anchor.id}*/}
-                {/*            position="absolute"*/}
-                {/*            graph={graph}*/}
-
-                {/*            anchor={anchor}*/}
-                {/*        />*/}
-                {/*    );*/}
-                {/*})}*/}
-            </GraphBlock>
-        );
-    }
 
     return (
-        <GraphBlock graph={graph} block={block}>
-            <Flex style={{padding: 24}}>{block.meta.description}</Flex>
+        <GraphBlock
+            graph={graph}
+            block={block}
+            containerClassName={'GraphBlock'}
+            className={'GraphBlock__container'}
+        >
+            <Flex className={'GraphBlock__wrapper'}>
+                <Flex className={'block-content__name'}>
+                    <Text variant={'subheader-1'}>{block.name}</Text>
+                    <Icon data={Layers3Diagonal} />
+                </Flex>
+                <Box>
+                    <Text variant={'caption-1'} color={'secondary'}>Id: {block.id.toString()}</Text>
+                </Box>
+            </Flex>
         </GraphBlock>
     );
 };

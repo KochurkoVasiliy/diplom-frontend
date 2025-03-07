@@ -5,7 +5,7 @@ import type {ServerOptions} from 'vite';
 import type {ViteOptions} from './types/types';
 
 export const viteServer = async (options: ViteOptions): Promise<ServerOptions> => {
-    const isHttps = options.mode === 'development';
+    const isHttps = false;
     return {
         port: options.port,
         open: true,

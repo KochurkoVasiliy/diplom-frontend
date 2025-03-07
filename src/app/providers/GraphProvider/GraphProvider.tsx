@@ -5,9 +5,10 @@ import {GraphContext} from './context';
 type GraphProviderProps = {
     children: ReactNode;
     graph: Graph;
+    start: () => void;
 };
 
-export const GraphProvider = ({children, graph}: GraphProviderProps) => {
+export const GraphProvider = ({children, graph, start}: GraphProviderProps) => {
     const subscribers = React.useRef<((blocks: any[]) => void)[]>([]);
 
     const subscribeToDelete = React.useCallback((callback: (blocks: any[]) => void) => {
@@ -26,6 +27,7 @@ export const GraphProvider = ({children, graph}: GraphProviderProps) => {
 
     const value = {
         graph,
+        start,
         deleteSelected,
         subscribeToDelete,
         unsubscribeFromDelete,

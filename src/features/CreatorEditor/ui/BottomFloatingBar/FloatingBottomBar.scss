@@ -12,6 +12,19 @@
     .g-button{
         height: max-content;
     }
+
+    &__popup{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: stretch;
+        align-content: start;
+        gap: 16px;
+        max-width: 350px;
+        max-height: 244px;
+        overflow-y: auto;
+        padding: 16px;
+    }
     &__button{
 
         &-container{
