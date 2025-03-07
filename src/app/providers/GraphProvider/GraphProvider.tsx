@@ -21,6 +21,7 @@ export const GraphProvider = ({children, graph, start}: GraphProviderProps) => {
 
     const deleteSelected = React.useCallback(() => {
         const selectedBlocks = graph.rootStore.blocksList.$selectedBlocks.value;
+        if(selectedBlocks.length === 0) {return}
         graph.api.deleteSelected();
         subscribers.current.forEach((cb) => cb(selectedBlocks));
     }, [graph]);

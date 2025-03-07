@@ -2,7 +2,7 @@
 import {Plus, TrashBin} from '@gravity-ui/icons';
 import block from 'bem-cn-lite';
 import './FloatingBottomBar.scss';
-import React, {useCallback} from 'react';
+import React from 'react';
 import {useGraphContext} from '@/app/providers';
 import {SelectionEvent} from '@gravity-ui/graph/build/graphEvents';
 import {TBlockId, TConnection} from '@gravity-ui/graph';
@@ -13,23 +13,17 @@ const captionText = text({variant: 'caption-2'});
 export const FloatingBottomBar = () => {
     const createButtonRef = React.useRef(null);
     const [open, setOpen] = React.useState(false);
-    const [selectedBlock, setSelectedBlock] = React.useState<TBlockId[] | null>(null);
-    const [selectedConnections, setSelectedConnections] = React.useState<TConnection[] | null>(
-        null,
-    );
+    const [selectedBlock, setSelectedBlock] = React.useState<TBlockId[]>([]);
+    const [selectedConnections, setSelectedConnections] = React.useState<TConnection[]>([]);
     const {graph, deleteSelected} = useGraphContext();
 
     React.useEffect(() => {
         const handleSelectionBlockChange = (event: SelectionEvent<TBlockId>) => {
-            if (event.detail.list.length !== 0) {
-                setSelectedBlock(event.detail.list);
-            }
+            setSelectedBlock(event.detail.list);
         };
 
         const handleSelectionConnectionsChange = (event: SelectionEvent<TConnection>) => {
-            if (event.detail.list.length !== 0) {
-                setSelectedConnections(event.detail.list);
-            }
+            setSelectedConnections(event.detail.list);
         };
 
         graph.on('blocks-selection-change', handleSelectionBlockChange);

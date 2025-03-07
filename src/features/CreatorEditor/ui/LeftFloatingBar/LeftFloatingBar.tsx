@@ -15,7 +15,6 @@ export const LeftFloatingBar = () => {
 
     React.useEffect(() => {
         const handleSelectionChange = (event: SelectionEvent<TBlockId>) => {
-            console.log(graph.rootStore.getAsConfig());
         };
 
         graph.on('blocks-selection-change', handleSelectionChange);
