@@ -6,6 +6,7 @@ import block from 'bem-cn-lite';
 import './CreatorLayout.scss';
 import {GraphProvider} from '@/app/providers';
 import {ECanChangeBlockGeometry, HookGraphParams, useGraph} from '@gravity-ui/graph';
+import axios from 'axios';
 
 const b = block('creator-layout');
 
@@ -46,7 +47,31 @@ const config: HookGraphParams = {
 };
 
 export const CreatorLayout = () => {
-    const {graph, setEntities, start} = useGraph(config);
+    const {graph, start} = useGraph(config);
+    const handleStartButton = async () => {
+        try {
+            const blocks = graph.rootStore.blocksList.$blocks.value;
+            const connections = graph.rootStore.connectionsList.$connections.value;
+            console.log(blocks);
+            const payload = {
+                blocks: blocks.map((block) => ({
+                    id: block.id,
+                    is: block.$state.value.is,
+                    meta: block.$state.value.meta,
+                })),
+                connections: connections.map((connection) => ({
+                    id: connection.id,
+                    sourceId: connection.$state.value.sourceBlockId,
+                    targetId: connection.$state.value.targetBlockId,
+                })),
+            };
+            const response = await axios.post('https://your-api-endpoint.com/start', payload);
+
+            console.log('Данные успешно отправлены:', response.data);
+        } catch (error) {
+            console.error('Ошибка при отправке данных:', error);
+        }
+    };
     return (
         <Suspense>
             <GraphProvider graph={graph} start={start}>
@@ -63,7 +88,7 @@ export const CreatorLayout = () => {
                                 <Icon size={18} data={Plus} />
                             </Button>
                         </Flex>
-                        <Button view={'outlined-success'}>
+                        <Button view={'outlined-success'} onClick={handleStartButton}>
                             <Icon data={Play} />
                             Запустить
                         </Button>

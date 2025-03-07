@@ -27,31 +27,6 @@ const b = block('creator-editor');
 
 export const CreatorEditorPage = () => {
     const {graph, start} = useGraphContext();
-    React.useEffect(() => {
-        graph.api.addBlock(createActionBlock(-100, 200, 1));
-        graph.api.selectBlocks(['layer_1'], true, ESelectionStrategy.APPEND);
-    }, []);
-
-    const addBlock = useCallback(() => {
-        const newBlock = {
-            id: `block_${Date.now()}`, // Уникальный ID для блока
-            is: 'block-action', // Тип блока
-            x: 0, // Позиция X
-            y: 0, // Позиция Y
-            width: 120, // Ширина блока
-            height: 120, // Высота блока
-            selected: false, // Выделен ли блок
-            name: 'New Block', // Имя блока
-            anchors: [], // Якоря блока
-        };
-
-        // Получаем текущие блоки и соединения
-        graph.api.addBlock(newBlock);
-    }, []);
-
-    const x = () => {
-        graph.api.deleteSelected();
-    };
     return (
         <Flex className={b()} width={'100%'} height={'100%'} style={{position: 'relative'}}>
             <LeftFloatingBar />
