@@ -65,7 +65,7 @@ export const CreatorLayout = () => {
                     targetId: connection.$state.value.targetBlockId,
                 })),
             };
-            const response = await axios.post('https://localhost:8000/generate_code', payload);
+            const response = await axios.post('http://localhost:8000/generate_code', payload);
 
             console.log('Данные успешно отправлены:', response.data);
         } catch (error) {

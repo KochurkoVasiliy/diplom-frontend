@@ -66,6 +66,7 @@ export const PropertyInput = ({blockId, propertyKey, value: initialValue}: Prope
                     className={b('input')}
                     value={localValue}
                     onUpdate={handleValueChange}
+                    allowDecimal
                 />
             )}
             {inputType === 'boolean' && (

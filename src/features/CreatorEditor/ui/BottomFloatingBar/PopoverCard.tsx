@@ -8,7 +8,7 @@ const b = block('popup-card');
 export const popoverCardTypes = [
     'Linear',
     'Conv2d',
-    'BatchNorm',
+    'BatchNorm2d',
     'LayerNorm',
     'LSTM',
     'MaxPool2d',
@@ -57,13 +57,13 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
-    BatchNorm: {
+    BatchNorm2d: {
         meta: {
             description: 'Batch normalization layer',
-            layer_type: 'BatchNorm',
+            layer_type: 'BatchNorm2d',
             num_features: 64, // Количество каналов
-            eps: '0.00001', // Добавлено
-            momentum: '0.1', // Добавлено
+            eps: 0.00001, // Добавлено
+            momentum: 0.1, // Добавлено
             affine: true, // Добавлено
             track_running_stats: true, // Добавлено
         },
@@ -74,7 +74,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             description: 'Layer normalization layer',
             layer_type: 'LayerNorm',
             normalized_shape: [64], // Форма для нормализации
-            eps: '0.00001', // Добавлено
+            eps: 0.00001, // Добавлено
             elementwise_affine: true, // Добавлено
         },
         size: {width: 60 * 3, height: 60 * 2},
@@ -88,7 +88,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             num_layers: 2, // Количество слоев LSTM
             bias: true, // Добавлено
             batch_first: true, // Добавлено
-            dropout: '0.0', // Добавлено
+            dropout: 0.0, // Добавлено
             bidirectional: false, // Добавлено
         },
         size: {width: 60 * 3, height: 60 * 2},
@@ -133,7 +133,7 @@ export const PopoverCard = ({type, setOpen}: PopoverCardType) => {
     const layerNames = {
         Linear: 'Linear',
         Conv2d: 'Conv2D',
-        BatchNorm: 'Batch Normalization',
+        BatchNorm2d: 'Batch Normalization',
         LayerNorm: 'Layer Normalization',
         LSTM: 'LSTM',
         MaxPool2d: 'Max Pooling 2D',
