@@ -56,7 +56,7 @@ export const CreatorLayout = () => {
             const payload = {
                 blocks: blocks.map((block) => ({
                     id: block.id,
-                    is: block.$state.value.is,
+                    description: block.$state.value.is,
                     meta: block.$state.value.meta,
                 })),
                 connections: connections.map((connection) => ({
@@ -65,7 +65,7 @@ export const CreatorLayout = () => {
                     targetId: connection.$state.value.targetBlockId,
                 })),
             };
-            const response = await axios.post('https://your-api-endpoint.com/start', payload);
+            const response = await axios.post('https://localhost:8000/generate_code', payload);
 
             console.log('Данные успешно отправлены:', response.data);
         } catch (error) {
