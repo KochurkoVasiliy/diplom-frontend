@@ -7,6 +7,7 @@ import {useGraphContext} from '@/app/providers';
 import {SelectionEvent} from '@gravity-ui/graph/build/graphEvents';
 import {TBlockId, TConnection} from '@gravity-ui/graph';
 import {PopoverCard, popoverCardTypes} from './PopoverCard';
+import {useKeyPress} from '@/shared/hooks';
 const b = block('creator-bottom-bar');
 
 const captionText = text({variant: 'caption-2'});
@@ -16,6 +17,8 @@ export const FloatingBottomBar = () => {
     const [selectedBlock, setSelectedBlock] = React.useState<TBlockId[]>([]);
     const [selectedConnections, setSelectedConnections] = React.useState<TConnection[]>([]);
     const {graph, deleteSelected} = useGraphContext();
+
+    useKeyPress('Delete', deleteSelected);
 
     React.useEffect(() => {
         const handleSelectionBlockChange = (event: SelectionEvent<TBlockId>) => {

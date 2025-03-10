@@ -54,6 +54,7 @@ export const CreatorLayout = () => {
             const connections = graph.rootStore.connectionsList.$connections.value;
             console.log(blocks);
             const payload = {
+                name: 'NNLayers',
                 blocks: blocks.map((block) => ({
                     id: block.id,
                     description: block.$state.value.is,
