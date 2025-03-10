@@ -25,6 +25,7 @@ export const FloatingBottomBar = () => {
         const layerName = type.toLowerCase();
         return layerName.includes(debouncedSearchQuery.toLowerCase());
     });
+
     React.useEffect(() => {
         const handleSelectionBlockChange = (event: SelectionEvent<TBlockId>) => {
             setSelectedBlock(event.detail.list);
