@@ -258,8 +258,8 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             layer_type: 'Embedding',
             num_embeddings: 1000,
             embedding_dim: 128,
-            padding_idx: null,
-            max_norm: null
+            padding_idx: 0,
+            max_norm: 0.0
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
