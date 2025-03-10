@@ -49,7 +49,7 @@ export const useRightFloatingBar = () => {
         const keys = key.split('.');
 
         // Создаем копию meta, чтобы не мутировать исходный объект
-        const updatedMeta = { ...currentBlock.meta };
+        const updatedMeta = JSON.parse(JSON.stringify(currentBlock.meta));
 
         // Обновляем вложенное свойство
         updateNestedProperty(updatedMeta, keys, value);
