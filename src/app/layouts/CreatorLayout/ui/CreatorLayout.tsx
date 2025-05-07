@@ -1,6 +1,15 @@
-import {Button, DropdownMenu, DropdownMenuItem, Flex, Icon} from '@gravity-ui/uikit';
-import {Suspense} from 'react';
-import {FolderArrowLeft, House, Play, Plus} from '@gravity-ui/icons';
+import {
+    Button,
+    DropdownMenu,
+    DropdownMenuItem,
+    Flex,
+    Icon,
+    ToastProps,
+    ToasterComponent,
+    useToaster,
+} from '@gravity-ui/uikit';
+import React, {Suspense} from 'react';
+import {CircleExclamationFill, FolderArrowLeft, House, Play, Plus} from '@gravity-ui/icons';
 import {Outlet} from 'react-router';
 import block from 'bem-cn-lite';
 import './CreatorLayout.scss';
@@ -48,6 +57,7 @@ const config: HookGraphParams = {
 
 export const CreatorLayout = () => {
     const {graph, start} = useGraph(config);
+    const {add} = useToaster();
     const handleStartButton = async () => {
         try {
             const blocks = graph.rootStore.blocksList.$blocks.value;
@@ -67,10 +77,60 @@ export const CreatorLayout = () => {
                 })),
             };
             const response = await axios.post('http://localhost:8000/generate_code', payload);
+            add({
+                actions: [],
+                autoHiding: undefined,
+                className: '',
+                content: undefined,
+                isClosable: false,
+                name: '',
+                onClose(): void {},
+                renderIcon(toastProps: ToastProps): React.ReactNode {
+                    return undefined;
+                },
+                theme: undefined,
 
+                title: 'response.status.toString(),',
+            });
             console.log('Данные успешно отправлены:', response.data);
         } catch (error) {
             console.error('Ошибка при отправке данных:', error);
+            let errorTitle = 'Ошибка';
+            let errorMessage = 'Произошла неизвестная ошибка';
+
+            // Проверяем, что error является объектом и имеет свойство value
+            if (typeof error === 'object' && error !== null && 'value' in error) {
+                const errorValue = (error as {value: unknown}).value;
+
+                // Проверяем, что value является объектом и имеет свойства title и message
+                if (typeof errorValue === 'object' && errorValue !== null) {
+                    if ('title' in errorValue && typeof errorValue.title === 'string') {
+                        errorTitle = errorValue.title;
+                    }
+                    if ('message' in errorValue && typeof errorValue.message === 'string') {
+                        errorMessage = errorValue.message;
+                    }
+                }
+            }
+
+            // Добавляем уведомление об ошибке
+            add({
+                name: 'error-notification', // Уникальное имя для уведомления
+                title: errorTitle,
+                content: errorMessage,
+                theme: 'danger', // Используем тему "danger" для ошибок
+                isClosable: true, // Позволяем пользователю закрыть уведомление
+                autoHiding: 5000, // Автоматически скрываем уведомление через 5 секунд
+                renderIcon: (toastProps: ToastProps) => (
+                    <Icon data={CircleExclamationFill} size={16} /> // Иконка для уведомления
+                ),
+                actions: [
+                    {
+                        label: 'Понятно',
+                        onClick: () => {},
+                    },
+                ],
+            });
         }
     };
     return (
@@ -96,6 +156,7 @@ export const CreatorLayout = () => {
                     </Flex>
                     <Outlet />
                 </Flex>
+                <ToasterComponent className="optional additional classes" />
             </GraphProvider>
         </Suspense>
     );

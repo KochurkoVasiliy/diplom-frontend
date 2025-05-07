@@ -4,7 +4,6 @@ import './PopoverCard.scss';
 import {useGraphContext} from '@/app/providers';
 import {v4 as uuidv4} from 'uuid';
 const b = block('popup-card');
-
 export const popoverCardTypes = [
     'Linear',
     'Conv2d',
@@ -42,8 +41,7 @@ export const popoverCardTypes = [
     'Add',
     'Sub',
     'Mul',
-    'Mean'
-
+    'Mean',
 ] as const;
 export type PopoverCardType = {
     type: (typeof popoverCardTypes)[number];
@@ -159,21 +157,21 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         meta: {
             description: 'Rectified Linear Unit activation',
             layer_type: 'ReLU',
-            inplace: false
+            inplace: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
     Sigmoid: {
         meta: {
             description: 'Sigmoid activation function',
-            layer_type: 'Sigmoid'
+            layer_type: 'Sigmoid',
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
     Tanh: {
         meta: {
             description: 'Hyperbolic Tangent activation',
-            layer_type: 'Tanh'
+            layer_type: 'Tanh',
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -182,7 +180,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             description: 'Randomly zeroes input elements',
             layer_type: 'Dropout',
             p: 0.5,
-            inplace: false
+            inplace: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -190,7 +188,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         meta: {
             description: 'Softmax activation',
             layer_type: 'Softmax',
-            dim: 1
+            dim: 1,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -205,7 +203,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             padding: [1],
             dilation: [1],
             groups: 1,
-            bias: true
+            bias: true,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -221,7 +219,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             padding: [1, 1, 1],
             dilation: [1, 1, 1],
             groups: 1,
-            bias: true
+            bias: true,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -234,7 +232,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             eps: 1e-5,
             momentum: 0.1,
             affine: true,
-            track_running_stats: true
+            track_running_stats: true,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -247,7 +245,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             eps: 1e-5,
             momentum: 0.1,
             affine: true,
-            track_running_stats: true
+            track_running_stats: true,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -258,8 +256,8 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             layer_type: 'Embedding',
             num_embeddings: 1000,
             embedding_dim: 128,
-            padding_idx: null,
-            max_norm: null
+            padding_idx: 0,
+            max_norm: 0.0,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -273,7 +271,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             bias: true,
             batch_first: true,
             dropout: 0.2,
-            bidirectional: false
+            bidirectional: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -288,7 +286,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             nonlinearity: 'tanh',
             bias: true,
             batch_first: true,
-            dropout: 0.0
+            dropout: 0.0,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -297,15 +295,15 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         meta: {
             description: 'Stack of Transformer encoder layers',
             layer_type: 'TransformerEncoder',
-            num_layers: 6,                 // Количество слоев
-            d_model: 512,                  // Размер эмбеддингов
-            nhead: 8,                      // Количество голов внимания
-            dim_feedforward: 2048,         // Размер FFN слоя
-            dropout: 0.1,                  // Общий дропаут
-            activation: 'gelu',            // Активация FFN
-            layer_norm_eps: 1e-5,          // Эпсилон для LayerNorm
-            batch_first: true,             // Формат данных
-            norm_first: false              // Стандартный порядок операций
+            num_layers: 6, // Количество слоев
+            d_model: 512, // Размер эмбеддингов
+            nhead: 8, // Количество голов внимания
+            dim_feedforward: 2048, // Размер FFN слоя
+            dropout: 0.1, // Общий дропаут
+            activation: 'gelu', // Активация FFN
+            layer_norm_eps: 1e-5, // Эпсилон для LayerNorm
+            batch_first: true, // Формат данных
+            norm_first: false, // Стандартный порядок операций
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -322,7 +320,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             activation: 'gelu',
             layer_norm_eps: 1e-5,
             batch_first: true,
-            norm_first: false
+            norm_first: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -335,7 +333,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             num_heads: 8,
             dropout: 0.1,
             bias: true,
-            add_bias_kv: false
+            add_bias_kv: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -344,7 +342,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             description: 'Leaky Rectified Linear Unit',
             layer_type: 'LeakyReLU',
             negative_slope: 0.01,
-            inplace: false
+            inplace: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -354,7 +352,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             description: 'Upsamples input data',
             layer_type: 'Upsample',
             scale_factor: 2,
-            mode: 'nearest' // 'nearest' | 'linear' | 'bilinear' | 'bicubic' | 'trilinear'
+            mode: 'nearest', // 'nearest' | 'linear' | 'bilinear' | 'bicubic' | 'trilinear'
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -364,7 +362,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             description: 'Flattens input to 1D',
             layer_type: 'Flatten',
             start_dim: 1,
-            end_dim: -1
+            end_dim: -1,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -373,7 +371,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         meta: {
             description: 'Rearranges elements in spatial blocks',
             layer_type: 'PixelShuffle',
-            upscale_factor: 2
+            upscale_factor: 2,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -383,7 +381,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             description: 'Spatial dropout for 2D data',
             layer_type: 'Dropout2d',
             p: 0.5,
-            inplace: false
+            inplace: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -395,7 +393,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             eps: 1e-5,
             momentum: 0.1,
             affine: false,
-            track_running_stats: false
+            track_running_stats: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -404,7 +402,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         meta: {
             description: 'Reflection padding for 2D data',
             layer_type: 'ReflectionPad2d',
-            padding: [1, 1, 1, 1] // [left, right, top, bottom]
+            padding: [1, 1, 1, 1], // [left, right, top, bottom]
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -413,7 +411,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         meta: {
             description: 'Adaptive average pooling for 2D',
             layer_type: 'AdaptiveAvgPool2d',
-            output_size: [1, 1]
+            output_size: [1, 1],
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -423,7 +421,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             description: 'Exponential Linear Unit activation',
             layer_type: 'ELU',
             alpha: 1.0,
-            inplace: false
+            inplace: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -433,7 +431,7 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
             description: 'Unflattens tensor to target shape',
             layer_type: 'Unflatten',
             dim: 1,
-            unflattened_size: [32, 32] // Пример для изображений 32x32
+            unflattened_size: [32, 32], // Пример для изображений 32x32
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -441,8 +439,8 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         meta: {
             description: 'Element-wise addition',
             layer_type: 'Add',
-            alpha: 1.0,     // Коэффициент для второго тензора (y = x1 + alpha * x2)
-            inplace: false
+            alpha: 1.0, // Коэффициент для второго тензора (y = x1 + alpha * x2)
+            inplace: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -451,8 +449,8 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         meta: {
             description: 'Element-wise subtraction',
             layer_type: 'Sub',
-            alpha: 1.0,     // y = x1 - alpha * x2
-            inplace: false
+            alpha: 1.0, // y = x1 - alpha * x2
+            inplace: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -461,8 +459,8 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         meta: {
             description: 'Element-wise multiplication',
             layer_type: 'Mul',
-            scale: 1.0,     // Дополнительный масштабирующий коэффициент (y = scale * x1 * x2)
-            inplace: false
+            scale: 1.0, // Дополнительный масштабирующий коэффициент (y = scale * x1 * x2)
+            inplace: false,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -471,8 +469,8 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         meta: {
             description: 'Mean value across dimensions',
             layer_type: 'Mean',
-            dim: [-1],      // По каким измерениям усреднять
-            keepdim: false  // Сохранять ли размерность
+            dim: [-1], // По каким измерениям усреднять
+            keepdim: false, // Сохранять ли размерность
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
@@ -518,7 +516,7 @@ export const PopoverCard = ({type, setOpen}: PopoverCardType) => {
         Add: 'Addition',
         Sub: 'Subtraction',
         Mul: 'Multiplication',
-        Mean: 'Mean Value'
+        Mean: 'Mean Value',
     };
 
     const handleClick = () => {
