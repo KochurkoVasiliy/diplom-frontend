@@ -1,0 +1,15 @@
+﻿.optimization {
+    width: 100%;
+    height: 100%;
+    /* Optional: If you want to use Flexbox properties for internal layout */
+    display: flex;
+    justify-content: space-between;
+
+    &__properties{
+        width: 25%;
+    }
+
+    &__graphics{
+        width: 75%;
+    }
+}

@@ -1,10 +1,13 @@
 import {createBrowserRouter} from 'react-router';
 
 import {App} from '@/app/App';
-import {CreatorLayout, LandingLayout, ProjectsLayout} from '@/app/layouts';
+import {ConvertLayout, CreatorLayout, LandingLayout, ProjectsLayout} from '@/app/layouts';
 import {CreatorEditorPage} from '@/pages/Creator';
 import {Error404Page} from '@/pages/Error404Page';
 import {ROUTES} from '@/shared/config/router/routes';
+import {OnnxToTensorRT} from '@/pages/Convert';
+import ConvertMainPage from '@/pages/Convert/ConvertMainPage/ui/ConvertMainPage';
+import {OptimizationPage} from '@/pages/Optimization';
 
 /**
  * Конфигурация роутера
@@ -58,6 +61,24 @@ export const router = createBrowserRouter([
                         ],
                     },
                 ],
+            },
+            {
+                path: ROUTES.convertationRoute,
+                element: <ConvertLayout />,
+                children: [
+                    {
+                        index: true,
+                        element: <ConvertMainPage />,
+                    },
+                    {
+                        path: ROUTES.onnxToTrtConverterRoute,
+                        element: <OnnxToTensorRT />,
+                    },
+                ],
+            },
+            {
+                path: ROUTES.optimizationRoute,
+                element: <OptimizationPage />,
             },
         ],
     },

@@ -1,0 +1,99 @@
+﻿/* General styles for the stepper container */
+.convert-stepper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Align to top */
+    padding: 24px;
+    gap: 24px; /* Space between Stepper and content */
+    background-color: var(--g-color-base-background); /* Using Gravity UI variables */
+}
+
+/* Styles for the Stepper component itself */
+.convert-stepper__steps {
+    width: 100%;
+    max-width: 700px; /* Max width for stepper */
+    padding-bottom: 16px; /* Space below stepper */
+}
+
+/* Styles for the content area of each step */
+.convert-stepper__content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 600px; /* Max width for content for readability */
+    padding: 20px;
+    border-radius: 8px; /* Rounded corners for content area */
+    background-color: var(--g-color-base-generic-ultralight); /* Slightly different background for content */
+    box-shadow: var(--g-shadow-card); /* Consistent shadow */
+}
+
+.convert-stepper__step-content {
+    width: 100%;
+}
+
+
+/* Styles for the upload card in Step 0 */
+.convert-stepper__upload-card {
+    padding: 32px 24px; /* Increased padding */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Increased gap */
+    border: 2px dashed var(--g-color-line-generic); /* Dashed border for dropzone feel */
+    background-color: var(--g-color-base-simple-hover); /* Lighter background */
+    width: 100%;
+}
+
+.convert-stepper__upload-text {
+    text-align: center;
+    color: var(--g-color-text-secondary);
+}
+
+.convert-stepper__upload-button {
+    min-width: 200px; /* Ensure button has a good size */
+}
+
+/* Styles for field groups in Step 1 */
+.convert-stepper__field-group {
+    gap: 8px; /* Space between label and input/control within a group */
+    width: 100%; /* Ensure full width for alignment */
+}
+
+/* Styles for the action buttons container */
+.convert-stepper__action-buttons {
+    margin-top: 16px; /* Space above buttons */
+    width: 100%;
+}
+
+/* Styles for the review card and JSON preview in Step 2 */
+.convert-stepper__review-card {
+    padding: 16px;
+    background-color: var(--g-color-base-generic);
+}
+
+.convert-stepper__review-json {
+    font-family: monospace;
+    font-size: 14px; /* Slightly larger for readability */
+    color: var(--g-color-text-primary);
+    background-color: var(--g-color-base-float); /* Background for pre block */
+    padding: 12px;
+    border-radius: 4px;
+    overflow-x: auto; /* Allow horizontal scrolling for long lines */
+    border: 1px solid var(--g-color-line-generic);
+}
+
+/* Ensure Labels are correctly styled if needed */
+.convert-stepper .g-label { /* Target Gravity UI Label specifically if needed */
+    margin-bottom: 0; /* Reset default margins if any, rely on Flex gap */
+}
+
+.convert-stepper__spinner {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
