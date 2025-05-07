@@ -10,6 +10,17 @@
     }
 
     &__graphics{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); // 2 колонки
+        grid-template-rows: repeat(2, 1fr);    // 2 строки         // отступ между элементами
         width: 75%;
+        height: 100%;
+
+        &-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
     }
 }
