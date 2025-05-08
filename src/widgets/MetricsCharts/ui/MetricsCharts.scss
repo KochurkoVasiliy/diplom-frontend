@@ -1,0 +1,13 @@
+﻿.metrics-charts {
+    display: grid;
+    /* Определяем 2 колонки, каждая занимает равную долю места */
+    grid-template-columns: repeat(2, 1fr);
+    /* Определяем 2 строки, каждая занимает равную долю места (или auto, если контент определяет высоту) */
+    grid-template-rows: repeat(2, auto); /* или repeat(2, auto); в зависимости от нужной высоты */
+    gap: 16px;
+    padding: 8px;
+
+    &__item {
+        min-height: auto;
+    }
+}

@@ -1,0 +1,19 @@
+﻿.optimization-form {
+    // Potentially styles for the form container itself
+    // For example, if you want a fixed width or specific background
+    overflow-y: auto; // If the form content might exceed viewport height
+    height: 100%; // Ensure it can take up available space
+
+    &__debug-output {
+        margin-top: auto; // Push debug output to the bottom if form doesn't fill space
+        background-color: #f9f9f9;
+        border-top: 1px solid #e0e0e0;
+        max-height: 200px;
+        overflow-y: auto;
+
+        pre {
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    }
+}

@@ -77,7 +77,9 @@ export const router = createBrowserRouter([
                 ],
             },
             {
-                path: ROUTES.optimizationRoute,
+                // Базовый путь для всех роутов оптимизации
+                path: '/optimization', // Можно оставить '/' если роуты полные, но лучше сгруппировать
+                // element: <OptimizationLayout />, // Если для оптимизации нужен отдельный Layout
                 element: <OptimizationPage />,
             },
         ],

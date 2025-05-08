@@ -1,0 +1,20 @@
+﻿.results-display {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    &__tab-list {
+        padding: 0 12px;
+        flex-shrink: 0; // Prevent tab list from shrinking
+    }
+
+    &__tab-panel {
+        flex-grow: 1; // Allow tab panel to take remaining space
+        overflow-y: auto; // Allow scrolling within the panel if content overflows
+        display: none; // Hide inactive panels
+
+        &_active {
+            display: block; // Show active panel
+        }
+    }
+}

@@ -1,26 +1,25 @@
-﻿.optimization {
-    width: 100%;
-    height: 100%;
-    /* Optional: If you want to use Flexbox properties for internal layout */
+﻿.optimization-page {
     display: flex;
-    justify-content: space-between;
+    height: 100vh; // Or 100% if parent has defined height
+    width: 100%;
 
-    &__properties{
-        width: 25%;
+    &__left-panel {
+        flex: 1; // Adjust flex basis or grow/shrink as needed
+        // For example, if you want it to take 60% of the width:
+        // flex-basis: 60%;
+        overflow: hidden; // Prevent content from breaking layout
+        display: flex;
+        flex-direction: column;
     }
 
-    &__graphics{
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); // 2 колонки
-        grid-template-rows: repeat(2, 1fr);    // 2 строки         // отступ между элементами
-        width: 75%;
-        height: 100%;
-
-        &-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-        }
+    &__right-panel {
+        // flex-basis: 40%;
+        width: 400px; // Or a fixed width, or flex grow/shrink
+        min-width: 300px; // Ensure it doesn't get too small
+        max-width: 500px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid #e0e0e0; // If Divider doesn't provide a visual line
     }
 }

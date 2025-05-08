@@ -7,7 +7,7 @@ export const ROUTES = {
 
     convertationRoute: '/convertation',
     onnxToTrtConverterRoute: '/convertation/onnx-to-trt',
+
     optimizationRoute: '/optimization',
 
-    convertationProjectRoute: '/convertation/:id',
 };
