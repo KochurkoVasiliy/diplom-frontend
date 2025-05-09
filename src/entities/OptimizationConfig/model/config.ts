@@ -3,22 +3,21 @@
 export const formStructureConfig: FormGroupConfig[] = [
     {
         id: 'optimizationParams',
-        title: 'Параметры оптимизации',
+        title: 'Параметры обучения',
         fields: [
             {
                 id: 'experimentName',
-                label: 'Название эксперимента:',
+                label: 'Название обучения:',
                 type: 'text',
                 placeholder: 'Введите название',
             },
             {
                 id: 'learningRate',
                 label: 'Скорость обучения:',
-                type: 'number',
-                step: 0.001,
+                type: 'text',
                 placeholder: '0.01',
             },
-            {id: 'useEarlyStopping', label: 'Ранняя остановка:', type: 'switch'},
+            {id: 'modelCheckPoint', label: 'Чекпоинт модели:', type: 'switch'},
         ],
     },
     {
@@ -45,14 +44,27 @@ export const formStructureConfig: FormGroupConfig[] = [
                     {value: 'relu', content: 'ReLU'},
                     {value: 'sigmoid', content: 'Sigmoid'},
                     {value: 'tanh', content: 'Tanh'},
+                    {value: 'softmax', content: 'Softmax'},
+                    {value: 'crossentropy', content: 'CrossEntropy'},
                 ],
             },
             {
-                id: 'layersCount',
-                label: 'Количество слоев:',
+                id: 'metric', // Note: Duplicate ID - FSD won't fix this, you should.
+                label: 'Метрика:',
+                type: 'select',
+                placeholder: 'Выберите метрику',
+                options: [
+                    {value: 'accuracy', content: 'Accuracy'},
+                    {value: 'f1score', content: 'F1score'},
+                    {value: 'rocauc', content: 'RocAuc'},
+                ],
+            },
+            {
+                id: 'epochs',
+                label: 'Количество эпох:',
                 type: 'number',
                 step: 1,
-                placeholder: '3',
+                placeholder: '10',
             },
         ],
     },

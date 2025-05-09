@@ -89,11 +89,11 @@ const blockConfigs: Record<(typeof popoverCardTypes)[number], BlockConfig> = {
         meta: {
             description: 'Batch normalization layer',
             layer_type: 'BatchNorm2d',
-            num_features: 64, // Количество каналов
-            eps: 0.00001, // Добавлено
-            momentum: 0.1, // Добавлено
-            affine: true, // Добавлено
-            track_running_stats: true, // Добавлено
+            num_features: 64,
+            eps: 0.00001,
+            momentum: 0.1,
+            affine: true,
+            track_running_stats: true,
         },
         size: {width: 60 * 3, height: 60 * 2},
     },
