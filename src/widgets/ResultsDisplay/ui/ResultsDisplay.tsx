@@ -34,8 +34,6 @@ export const ResultsDisplay = ({
                     value="chartsTab"
                     className={b('tab-panel', {active: activeTab === 'chartsTab'})}
                 >
-                    {/* Pass chart data to MetricsCharts */}
-                    {/*<MetricsCharts chartData={chartData} />*/}
                     <MetricsCharts />
                 </TabPanel>
                 <TabPanel

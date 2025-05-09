@@ -12,6 +12,7 @@ export const useOptimizationForm = ({
 }: UseOptimizationFormProps = {}) => {
     const [formValues, setFormValues] = useState<Record<string, any>>(getInitialFormValues());
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedDatasetFile, setSelectedDatasetFile] = useState<File | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleInputChange = useCallback((id: string, value: any) => {
@@ -22,9 +23,17 @@ export const useOptimizationForm = ({
         setSelectedFile(file);
     }, []);
 
+    const handleDatasetFileChange = useCallback((file: File | null) => {
+        setSelectedDatasetFile(file);
+    }, []);
+
     const handleSubmit = useCallback(async () => {
         if (!selectedFile) {
-            alert('Пожалуйста, выберите .py файл.');
+            alert('Пожалуйста, выберите .py файл скрипта.');
+            return;
+        }
+        if (!selectedDatasetFile) {
+            alert('Пожалуйста, выберите .zip файл с датасетом.');
             return;
         }
 
@@ -32,6 +41,10 @@ export const useOptimizationForm = ({
 
         const formData = new FormData();
         formData.append('scriptFile', selectedFile);
+
+        if (selectedDatasetFile) {
+            formData.append('datasetFile', selectedDatasetFile);
+        }
 
         Object.keys(formValues).forEach((key) => {
             const value = formValues[key];
@@ -58,30 +71,31 @@ export const useOptimizationForm = ({
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error('Submission error:', response.status, errorText);
-                throw new Error(`Server responded with status ${response.status}: ${errorText}`);
+                console.error('Ошибка отправки:', response.status, errorText);
+                throw new Error(`Сервер ответил со статусом ${response.status}: ${errorText}`);
             }
 
             const result = await response.json();
-            console.log('Submission successful:', result);
+            console.log('Отправка успешна:', result);
 
             onSubmitSuccess?.();
-
             sseConnect?.();
         } catch (error: any) {
-            console.error('Failed to submit form:', error);
+            console.error('Не удалось отправить форму:', error);
             alert('Ошибка при отправке формы: ' + error.message);
         } finally {
             setIsSubmitting(false);
         }
-    }, [formValues, selectedFile, onSubmitSuccess, sseConnect]);
+    }, [formValues, selectedFile, selectedDatasetFile, onSubmitSuccess, sseConnect]);
 
     return {
         formValues,
         selectedFile,
+        selectedDatasetFile,
         isSubmitting,
         handleInputChange,
         handleFileChange,
+        handleDatasetFileChange,
         handleSubmit,
         formStructure: formStructureConfig,
     };

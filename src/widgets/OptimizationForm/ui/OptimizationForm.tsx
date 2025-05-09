@@ -20,14 +20,16 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
     const {
         formValues,
         selectedFile,
+        selectedDatasetFile,
         isSubmitting,
         handleInputChange,
         handleFileChange,
+        handleDatasetFileChange,
         handleSubmit,
         formStructure,
     } = useOptimizationForm({onSubmitSuccess, sseConnect});
 
-    const FileInputButton = () => {
+    const ScriptFileInputButton = () => {
         const fileInputRef = React.useRef<HTMLInputElement>(null);
 
         const handleClick = () => {
@@ -45,7 +47,6 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                 <Button onClick={handleClick} size={'xl'}>
                     {selectedFile ? selectedFile.name : 'Выберите файл .py'}
                 </Button>
-                {/* Hidden input */}
                 <input
                     type="file"
                     ref={fileInputRef}
@@ -57,53 +58,84 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
         );
     };
 
+    const DatasetFileInputButton = () => {
+        const datasetFileInputRef = React.useRef<HTMLInputElement>(null);
+
+        const handleClick = () => {
+            datasetFileInputRef.current?.click();
+        };
+
+        const onDatasetFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+            const file = event.target.files?.[0] || null;
+            handleDatasetFileChange(file);
+        };
+
+        return (
+            <Flex direction="column" gap="2">
+                <Text variant={'body-2'}>Датасет (ZIP архив):</Text>
+                <Button onClick={handleClick} size={'xl'}>
+                    {selectedDatasetFile ? selectedDatasetFile.name : 'Выберите файл .zip'}
+                </Button>
+                <input
+                    type="file"
+                    ref={datasetFileInputRef}
+                    onChange={onDatasetFileChange}
+                    style={{display: 'none'}}
+                    accept=".zip,.application/zip,.application/x-zip-compressed"
+                />
+            </Flex>
+        );
+    };
+
     return (
         <Flex direction={'column'} className={b()}>
-            {formStructure.map((group) => (
-                <React.Fragment key={group.id}>
-                    <Box spacing={{p: 3}}>
-                        <Text variant={'subheader-2'}>{group.title}</Text>
-                    </Box>
-                    <Divider />
-                    <Box spacing={{p: 3}}>
-                        <Flex direction={'column'} gap={'4'}>
-                            {group.fields.map((field) => (
-                                <DynamicFormField
-                                    key={field.id}
-                                    field={field}
-                                    value={formValues[field.id]}
-                                    onUpdate={(val) => handleInputChange(field.id, val)}
-                                />
-                            ))}
-                            {/* Add file input here or below a specific group */}
-                        </Flex>
-                    </Box>
-                </React.Fragment>
-            ))}
-
-            {/* Add File Input Button and Submit Button outside groups but still in form area */}
+            <Box style={{height: '85%', overflowY: 'auto'}}>
+                {formStructure.map((group) => (
+                    <React.Fragment key={group.id}>
+                        <Box spacing={{p: 3}}>
+                            <Text variant={'subheader-2'}>{group.title}</Text>
+                        </Box>
+                        <Divider />
+                        <Box spacing={{p: 3}}>
+                            <Flex direction={'column'} gap={'4'}>
+                                {group.fields.map((field) => (
+                                    <DynamicFormField
+                                        key={field.id}
+                                        field={field}
+                                        value={formValues[field.id]}
+                                        onUpdate={(val) => handleInputChange(field.id, val)}
+                                    />
+                                ))}
+                            </Flex>
+                        </Box>
+                    </React.Fragment>
+                ))}
+            </Box>
+            <Divider />
             <Box spacing={{p: 3}}>
                 <Flex direction={'column'} gap={'4'}>
-                    <FileInputButton /> {/* File input */}
+                    <ScriptFileInputButton />
+                    <DatasetFileInputButton />
                     <Button
                         size={'xl'}
                         view="action"
                         onClick={handleSubmit}
                         loading={isSubmitting}
-                        disabled={!selectedFile || isSubmitting} // Disable if no file or submitting
+                        disabled={!selectedFile || !selectedDatasetFile || isSubmitting}
                     >
                         Запустить оптимизацию
                     </Button>
                 </Flex>
             </Box>
-
-            {/* Debug output - keep for development */}
-            <Box spacing={{p: 3}} className={b('debug-output')}>
+            <Box spacing={{p: 3}} style={{minHeight: '15%'}} className={b('debug-output')}>
                 <Text variant="code-2" as="pre">
                     {JSON.stringify(
                         {
                             formValues: formValues,
-                            selectedFile: selectedFile ? selectedFile.name : null,
+                            selectedScriptFile: selectedFile ? selectedFile.name : null,
+                            selectedDatasetFile: selectedDatasetFile
+                                ? selectedDatasetFile.name
+                                : null,
                         },
                         null,
                         2,
