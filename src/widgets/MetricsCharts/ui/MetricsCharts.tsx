@@ -11,8 +11,19 @@ export const MetricsCharts = () => {
     const chartData1 = initialChartData; // Example
     const chartData2 = {
         ...initialChartData,
-        libraryConfig: {...initialChartData.libraryConfig, title: {text: 'Accuracy'}},
-    }; // Example for a second chart
+        libraryConfig: {...initialChartData.libraryConfig, title: {text: 'val_loss'}},
+    };
+
+    const chartData3 = {
+        ...initialChartData,
+        libraryConfig: {...initialChartData.libraryConfig, title: {text: 'metric'}},
+    };
+
+    const chartData4 = {
+        ...initialChartData,
+        libraryConfig: {...initialChartData.libraryConfig, title: {text: 'val_metric'}},
+    };
+
 
     return (
         <div className={b()}>
@@ -23,10 +34,10 @@ export const MetricsCharts = () => {
                 <ChartKit type="yagr" data={chartData2} />
             </div>
             <div className={b('item')}>
-                <ChartKit type="yagr" data={chartData2} />
+                <ChartKit type="yagr" data={chartData3} />
             </div>
             <div className={b('item')}>
-                <ChartKit type="yagr" data={chartData2} />
+                <ChartKit type="yagr" data={chartData4} />
             </div>
         </div>
     );

@@ -3,17 +3,24 @@ import {formStructureConfig, getInitialFormValues} from '@/entities/Optimization
 
 interface UseOptimizationFormProps {
     onSubmitSuccess?: () => void;
-    sseConnect?: () => void;
+    onSseMessage?: (data: string) => void;
+    onSseError?: (error: Error) => void;
+    onSseOpen?: () => void;
+    onSseClose?: () => void;
 }
 
 export const useOptimizationForm = ({
     onSubmitSuccess,
-    sseConnect,
+    onSseMessage,
+    onSseError,
+    onSseOpen,
+    onSseClose,
 }: UseOptimizationFormProps = {}) => {
     const [formValues, setFormValues] = useState<Record<string, any>>(getInitialFormValues());
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [selectedDatasetFile, setSelectedDatasetFile] = useState<File | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [abortController, setAbortController] = useState<AbortController | null>(null);
 
     const handleInputChange = useCallback((id: string, value: any) => {
         setFormValues((prev) => ({...prev, [id]: value}));
@@ -38,55 +45,131 @@ export const useOptimizationForm = ({
         }
 
         setIsSubmitting(true);
+        const controller = new AbortController();
+        setAbortController(controller);
 
         const formData = new FormData();
         formData.append('scriptFile', selectedFile);
-
-        if (selectedDatasetFile) {
-            formData.append('datasetFile', selectedDatasetFile);
-        }
+        formData.append('datasetFile', selectedDatasetFile);
 
         Object.keys(formValues).forEach((key) => {
             const value = formValues[key];
-
             if (
                 value !== undefined &&
                 value !== null &&
-                (typeof value !== 'string' || value !== '')
+                (typeof value !== 'string' || value.trim() !== '')
             ) {
-                formData.append(key, value);
+                if (typeof value === 'boolean') {
+                    formData.append(key, String(value));
+                } else {
+                    formData.append(key, value);
+                }
             } else if (typeof value === 'boolean') {
                 formData.append(key, String(value));
             }
         });
 
-        // TODO: Замени на свой endpoint
         const submitEndpoint = 'http://localhost:8000/start-optimization';
 
         try {
             const response = await fetch(submitEndpoint, {
                 method: 'POST',
                 body: formData,
+                signal: controller.signal,
             });
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error('Ошибка отправки:', response.status, errorText);
-                throw new Error(`Сервер ответил со статусом ${response.status}: ${errorText}`);
+                console.error('Ошибка отправки (до стриминга):', response.status, errorText);
+                const err = new Error(
+                    `Сервер ответил ошибкой ${response.status} перед началом стриминга: ${errorText || response.statusText}`,
+                );
+                onSseError?.(err);
+                throw err;
             }
 
-            const result = await response.json();
-            console.log('Отправка успешна:', result);
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('text/event-stream')) {
+                const responseText = await response.text();
+                console.warn('Ответ сервера не является text/event-stream:', responseText);
+                const err = new Error(
+                    'Ответ сервера не является ожидаемым потоком SSE. Получено: ' + contentType,
+                );
+                onSseError?.(err);
+                throw err;
+            }
+
+            onSseOpen?.();
+
+            const reader = response.body?.getReader();
+            if (!reader) {
+                const err = new Error('Не удалось получить reader для тела ответа.');
+                onSseError?.(err);
+                throw err;
+            }
+
+            const decoder = new TextDecoder();
+            let buffer = '';
+
+            // eslint-disable-next-line no-constant-condition
+            while (true) {
+                const {done, value} = await reader.read();
+                if (done) {
+                    onSseClose?.();
+                    break;
+                }
+
+                buffer += decoder.decode(value, {stream: true});
+                let eolIndex;
+                while ((eolIndex = buffer.indexOf('\n\n')) >= 0) {
+                    const messageLine = buffer.substring(0, eolIndex).trim();
+                    buffer = buffer.substring(eolIndex + 2);
+
+                    if (messageLine.startsWith('data:')) {
+                        const data = messageLine.substring(5).trim();
+                        onSseMessage?.(data);
+                    } else if (messageLine.trim() === ':') {
+                        console.log('SSE keep-alive comment received');
+                    } else if (messageLine.trim() !== '') {
+                        console.log(
+                            'Получена неформатированная SSE строка или другой тип:',
+                            messageLine,
+                        );
+                    }
+                }
+            }
 
             onSubmitSuccess?.();
-            sseConnect?.();
         } catch (error: any) {
-            console.error('Не удалось отправить форму:', error);
-            alert('Ошибка при отправке формы: ' + error.message);
+            if (error.name === 'AbortError') {
+                console.log('Запрос был прерван');
+                onSseError?.(new Error('Запрос был прерван клиентом.'));
+                onSseClose?.();
+            } else {
+                console.error('Не удалось отправить форму или обработать SSE:', error);
+                alert('Ошибка при отправке формы или получении данных: ' + error.message);
+                onSseError?.(error as Error);
+            }
         } finally {
             setIsSubmitting(false);
+            setAbortController(null);
         }
-    }, [formValues, selectedFile, selectedDatasetFile, onSubmitSuccess, sseConnect]);
+    }, [
+        formValues,
+        selectedFile,
+        selectedDatasetFile,
+        onSubmitSuccess,
+        onSseMessage,
+        onSseError,
+        onSseOpen,
+        onSseClose,
+    ]);
+    const cancelOptimization = useCallback(() => {
+        if (abortController) {
+            abortController.abort();
+            console.log('Попытка отмены запроса...');
+        }
+    }, [abortController]);
 
     return {
         formValues,
@@ -97,6 +180,7 @@ export const useOptimizationForm = ({
         handleFileChange,
         handleDatasetFileChange,
         handleSubmit,
+        cancelOptimization,
         formStructure: formStructureConfig,
     };
 };

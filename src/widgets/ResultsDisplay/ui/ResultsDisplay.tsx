@@ -16,7 +16,7 @@ interface ResultsDisplayProps {
 }
 export const ResultsDisplay = ({
     consoleLogs,
-    chartData,
+    // chartData,
     isStreaming,
     streamError,
     // clearConsoleLogs
