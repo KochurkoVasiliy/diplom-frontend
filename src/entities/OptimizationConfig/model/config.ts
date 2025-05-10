@@ -6,6 +6,17 @@ export const formStructureConfig: FormGroupConfig[] = [
         title: 'Параметры обучения',
         fields: [
             {
+                id: 'typeTask',
+                label: 'Тип задачи:',
+                type: 'select',
+                placeholder: 'Выберите тип задачи',
+                options: [
+                    {value: 'imageClassification', content: 'Классификация изображений'},
+                    {value: 'csvClassification', content: 'Классификация табличных данных'},
+                    {value: 'regression', content: 'Регрессия'},
+                ],
+            },
+            {
                 id: 'experimentName',
                 label: 'Название обучения:',
                 type: 'text',
@@ -22,7 +33,7 @@ export const formStructureConfig: FormGroupConfig[] = [
     },
     {
         id: 'modelArchitecture',
-        title: 'Параметры обучения',
+        title: 'Параметры оптимизатора',
         fields: [
             {
                 id: 'optimizer',
