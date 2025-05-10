@@ -22,7 +22,7 @@ export const formStructureConfig: FormGroupConfig[] = [
     },
     {
         id: 'modelArchitecture',
-        title: 'Архитектура модели',
+        title: 'Параметры обучения',
         fields: [
             {
                 id: 'optimizer',
@@ -58,6 +58,20 @@ export const formStructureConfig: FormGroupConfig[] = [
                     {value: 'f1score', content: 'F1score'},
                     {value: 'rocauc', content: 'RocAuc'},
                 ],
+            },
+            {
+                id: 'trainBatches',
+                label: 'Размер тренировночного батча:',
+                type: 'number',
+                step: 1,
+                placeholder: '32',
+            },
+            {
+                id: 'validBatches',
+                label: 'Размер валидационного батча:',
+                type: 'number',
+                step: 1,
+                placeholder: '32',
             },
             {
                 id: 'epochs',
