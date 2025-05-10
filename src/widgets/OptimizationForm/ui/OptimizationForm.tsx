@@ -10,12 +10,19 @@ const b = block('optimization-form');
 
 interface OptimizationFormProps {
     onSubmitSuccess?: () => void;
-    sseConnect?: () => void;
+    // Переименовываем для ясности
+    onSseOpen?: () => void;
+    onSseClose?: () => void;
+    onSseMessage?: (data: any) => void;
+    onSseError?: (error: Error) => void;
 }
 
 export const OptimizationForm: React.FC<OptimizationFormProps> = ({
     onSubmitSuccess,
-    sseConnect,
+    onSseOpen,
+    onSseClose,
+    onSseMessage,
+    onSseError,
 }) => {
     const {
         formValues,
@@ -27,7 +34,14 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
         handleDatasetFileChange,
         handleSubmit,
         formStructure,
-    } = useOptimizationForm({onSubmitSuccess, sseConnect});
+        cancelOptimization, // Получаем функцию отмены
+    } = useOptimizationForm({
+        onSubmitSuccess,
+        onSseOpen,
+        onSseClose,
+        onSseMessage,
+        onSseError,
+    });
 
     const ScriptFileInputButton = () => {
         const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -125,6 +139,16 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                     >
                         Запустить оптимизацию
                     </Button>
+                    {isSubmitting && ( // Добавляем кнопку отмены, если идет отправка
+                        <Button
+                            size={'xl'}
+                            view="normal"
+                            onClick={cancelOptimization}
+                            disabled={!isSubmitting}
+                        >
+                            Отменить
+                        </Button>
+                    )}
                 </Flex>
             </Box>
             <Box spacing={{p: 3}} style={{minHeight: '15%'}} className={b('debug-output')}>

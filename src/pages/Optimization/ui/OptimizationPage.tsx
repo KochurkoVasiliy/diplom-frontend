@@ -1,6 +1,5 @@
 ﻿import {Divider, Flex} from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
-// Import updated components and the new SSE hook
 import {ResultsDisplay} from '@/widgets/ResultsDisplay';
 import {OptimizationForm} from '@/widgets/OptimizationForm';
 import {useOptimizationStream} from '@/shared/lib/useOptimizationStream';
@@ -9,54 +8,50 @@ import {useEffect} from 'react';
 
 const b = block('optimization-page');
 
-// TODO: Define your SSE endpoint URL
-const SSE_ENDPOINT = '/api/optimization-stream';
-
 export const OptimizationPage = () => {
     const {
-        logs: consoleLogs,
-        chartData,
+        consoleLogs,
+        chartData, // Теперь это объект с данными графиков
         isStreaming,
         error: streamError,
         connect: startStream,
         disconnect: stopStream,
         clearStreamData,
-    } = useOptimizationStream(SSE_ENDPOINT);
+        handleStreamMessage, // Получаем обработчик сообщений
+        setError: setStreamError, // Получаем функцию установки ошибки
+    } = useOptimizationStream();
 
     useEffect(() => {
         return () => {
-            stopStream();
+            stopStream(); // Убедимся, что стрим остановлен при размонтировании компонента
         };
     }, [stopStream]);
 
     const handleFormSubmitSuccess = () => {
-        console.log('Form submitted successfully. Starting SSE stream...');
-        clearStreamData();
-        startStream();
+        console.log('Form submitted successfully. Preparing for SSE stream...');
+        clearStreamData(); // Очищаем предыдущие данные перед новым запуском
+        startStream(); // Сообщаем хуку useOptimizationStream, что стриминг ожидается
     };
-
-    // const handleStopOptimization = () => {
-    //     // TODO
-    //     stopStream(); // Stop the SSE stream
-    // };
 
     return (
         <Flex className={b()}>
             <div className={b('left-panel')}>
                 <ResultsDisplay
                     consoleLogs={consoleLogs}
-                    chartData={chartData}
+                    chartData={chartData} // Передаем объект, содержащий все данные графиков
                     isStreaming={isStreaming}
                     streamError={streamError}
-                    // Pass down a way to clear logs if needed
-                    // clearConsoleLogs={clearStreamData}
                 />
             </div>
             <Divider orientation={'vertical'} />
             <div className={b('right-panel')}>
                 <OptimizationForm
                     onSubmitSuccess={handleFormSubmitSuccess}
-                    sseConnect={startStream}
+                    // Передаем обработчики из useOptimizationStream в OptimizationForm
+                    onSseMessage={handleStreamMessage}
+                    onSseError={(err) => setStreamError(err.message)}
+                    onSseOpen={startStream} // Переименован для ясности
+                    onSseClose={stopStream} // Добавляем обработчик закрытия стрима
                 />
             </div>
         </Flex>

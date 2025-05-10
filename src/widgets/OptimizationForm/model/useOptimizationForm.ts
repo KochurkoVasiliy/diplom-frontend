@@ -3,7 +3,8 @@ import {formStructureConfig, getInitialFormValues} from '@/entities/Optimization
 
 interface UseOptimizationFormProps {
     onSubmitSuccess?: () => void;
-    onSseMessage?: (data: string) => void;
+    // Изменен тип на `any` для передачи распарсенных данных
+    onSseMessage?: (data: any) => void;
     onSseError?: (error: Error) => void;
     onSseOpen?: () => void;
     onSseClose?: () => void;
@@ -99,7 +100,7 @@ export const useOptimizationForm = ({
                 throw err;
             }
 
-            onSseOpen?.();
+            onSseOpen?.(); // Сообщаем, что стриминг начался
 
             const reader = response.body?.getReader();
             if (!reader) {
@@ -115,28 +116,27 @@ export const useOptimizationForm = ({
             while (true) {
                 const {done, value} = await reader.read();
                 if (done) {
-                    onSseClose?.();
+                    onSseClose?.(); // Сообщаем, что стриминг завершился
                     break;
                 }
 
                 buffer += decoder.decode(value, {stream: true});
-                let eolIndex;
-                while ((eolIndex = buffer.indexOf('\n\n')) >= 0) {
-                    const messageLine = buffer.substring(0, eolIndex).trim();
-                    buffer = buffer.substring(eolIndex + 2);
-
-                    if (messageLine.startsWith('data:')) {
-                        const data = messageLine.substring(5).trim();
-                        onSseMessage?.(data);
-                    } else if (messageLine.trim() === ':') {
-                        console.log('SSE keep-alive comment received');
-                    } else if (messageLine.trim() !== '') {
-                        console.log(
-                            'Получена неформатированная SSE строка или другой тип:',
-                            messageLine,
-                        );
+                const messages = buffer.split('\n\n'); // SSE сообщения разделяются двумя символами новой строки
+                for (let i = 0; i < messages.length - 1; i++) {
+                    // Обрабатываем все, кроме последнего (потенциально неполного) сообщения
+                    const message = messages[i];
+                    if (message.startsWith('data: ')) {
+                        try {
+                            const jsonString = message.substring('data: '.length);
+                            const parsedData = JSON.parse(jsonString);
+                            onSseMessage?.(parsedData); // Вызываем колбэк с распарсенными данными
+                        } catch (parseError) {
+                            console.error('Ошибка парсинга SSE сообщения:', parseError, message);
+                            onSseError?.(new Error('Ошибка парсинга SSE сообщения.'));
+                        }
                     }
                 }
+                buffer = messages[messages.length - 1]; // Оставляем неполную часть буфера
             }
 
             onSubmitSuccess?.();
@@ -144,7 +144,7 @@ export const useOptimizationForm = ({
             if (error.name === 'AbortError') {
                 console.log('Запрос был прерван');
                 onSseError?.(new Error('Запрос был прерван клиентом.'));
-                onSseClose?.();
+                onSseClose?.(); // В случае отмены, также сообщаем о закрытии
             } else {
                 console.error('Не удалось отправить форму или обработать SSE:', error);
                 alert('Ошибка при отправке формы или получении данных: ' + error.message);
@@ -164,6 +164,7 @@ export const useOptimizationForm = ({
         onSseOpen,
         onSseClose,
     ]);
+
     const cancelOptimization = useCallback(() => {
         if (abortController) {
             abortController.abort();

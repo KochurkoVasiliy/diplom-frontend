@@ -1,43 +1,54 @@
 ﻿import ChartKit from '@gravity-ui/chartkit';
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 import block from 'bem-cn-lite';
+import {YagrWidgetData} from '@gravity-ui/chartkit/yagr';
 import {initialChartData} from '../config/initialChartData';
 import './MetricsCharts.scss';
 
 const b = block('metrics-charts');
 
-export const MetricsCharts = () => {
-    // In a real app, chartData might come as props or from a store/hook
-    const chartData1 = initialChartData; // Example
-    const chartData2 = {
-        ...initialChartData,
-        libraryConfig: {...initialChartData.libraryConfig, title: {text: 'val_loss'}},
+interface MetricsChartsProps {
+    chartData?: {
+        loss: YagrWidgetData;
+        val_loss: YagrWidgetData;
+        metric: YagrWidgetData;
+        val_metric: YagrWidgetData;
     };
+}
 
-    const chartData3 = {
-        ...initialChartData,
-        libraryConfig: {...initialChartData.libraryConfig, title: {text: 'metric'}},
+export const MetricsCharts = ({chartData}: MetricsChartsProps) => {
+    // Используем данные из пропсов или дефолтные, если пропсы еще не пришли
+    const currentChartData = chartData || {
+        loss: {
+            ...initialChartData,
+            libraryConfig: {...initialChartData.libraryConfig, title: {text: 'loss'}},
+        },
+        val_loss: {
+            ...initialChartData,
+            libraryConfig: {...initialChartData.libraryConfig, title: {text: 'val_loss'}},
+        },
+        metric: {
+            ...initialChartData,
+            libraryConfig: {...initialChartData.libraryConfig, title: {text: 'metric'}},
+        },
+        val_metric: {
+            ...initialChartData,
+            libraryConfig: {...initialChartData.libraryConfig, title: {text: 'val_metric'}},
+        },
     };
-
-    const chartData4 = {
-        ...initialChartData,
-        libraryConfig: {...initialChartData.libraryConfig, title: {text: 'val_metric'}},
-    };
-
 
     return (
         <div className={b()}>
             <div className={b('item')}>
-                <ChartKit type="yagr" data={chartData1} />
+                <ChartKit type="yagr" data={currentChartData.loss} />
             </div>
             <div className={b('item')}>
-                <ChartKit type="yagr" data={chartData2} />
+                <ChartKit type="yagr" data={currentChartData.val_loss} />
             </div>
             <div className={b('item')}>
-                <ChartKit type="yagr" data={chartData3} />
+                <ChartKit type="yagr" data={currentChartData.metric} />
             </div>
             <div className={b('item')}>
-                <ChartKit type="yagr" data={chartData4} />
+                <ChartKit type="yagr" data={currentChartData.val_metric} />
             </div>
         </div>
     );
