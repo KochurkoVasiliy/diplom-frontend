@@ -7,6 +7,18 @@
     padding: 24px;
     gap: 24px; /* Space between Stepper and content */
     background-color: var(--g-color-base-background); /* Using Gravity UI variables */
+
+    &__console-output{
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+
+        overflow-y: auto;
+
+        background-color: var(--g-color-base-generic);
+
+        padding: 8px;
+        border-radius: 8px;
+    }
 }
 
 /* Styles for the Stepper component itself */

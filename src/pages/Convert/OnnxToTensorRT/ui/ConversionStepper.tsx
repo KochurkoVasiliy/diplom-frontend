@@ -341,27 +341,24 @@ export const ConversionStepper = () => {
                                         </Text>
                                         <pre className={b('console-output')}>
                                             {conversionResult.logs?.args && (
-                                                <Text variant={'code-1'} className={b('log-line')}>
+                                                <Text className={b('log-line')}>
                                                     {`$ ${conversionResult.logs.args.join(' ')}\n`}
                                                 </Text>
                                             )}
                                             {conversionResult.logs?.stdout && (
-                                                <Text variant={'code-1'} className={b('log-line')}>
+                                                <Text className={b('log-line')}>
                                                     {conversionResult.logs.stdout}
                                                 </Text>
                                             )}
                                             {conversionResult.logs?.stderr && (
-                                                <Text
-                                                    variant={'code-1'}
-                                                    className={b('log-line')}
-                                                    color="danger"
-                                                >
+                                                <Text className={b('log-line')} color="danger">
                                                     {' '}
                                                     {conversionResult.logs.stderr}
                                                 </Text>
                                             )}
                                             {conversionResult.logs?.returncode !== undefined && (
-                                                <Text variant={'code-1'} className={b('log-line')}>
+                                                <Text className={b('log-line')}>
+                                                    {' '}
                                                     {`Return Code: ${conversionResult.logs.returncode}\n`}
                                                 </Text>
                                             )}
