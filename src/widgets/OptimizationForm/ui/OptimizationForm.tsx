@@ -10,7 +10,7 @@ const b = block('optimization-form');
 
 interface OptimizationFormProps {
     onSubmitSuccess?: () => void;
-    // Переименовываем для ясности
+    onBeforeSubmit?: () => void;
     onSseOpen?: () => void;
     onSseClose?: () => void;
     onSseMessage?: (data: any) => void;
@@ -19,6 +19,7 @@ interface OptimizationFormProps {
 
 export const OptimizationForm: React.FC<OptimizationFormProps> = ({
     onSubmitSuccess,
+    onBeforeSubmit,
     onSseOpen,
     onSseClose,
     onSseMessage,
@@ -34,9 +35,10 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
         handleDatasetFileChange,
         handleSubmit,
         formStructure,
-        cancelOptimization, // Получаем функцию отмены
+        cancelOptimization,
     } = useOptimizationForm({
         onSubmitSuccess,
+        onBeforeSubmit,
         onSseOpen,
         onSseClose,
         onSseMessage,
@@ -139,7 +141,7 @@ export const OptimizationForm: React.FC<OptimizationFormProps> = ({
                     >
                         Запустить оптимизацию
                     </Button>
-                    {isSubmitting && ( // Добавляем кнопку отмены, если идет отправка
+                    {isSubmitting && (
                         <Button
                             size={'xl'}
                             view="normal"

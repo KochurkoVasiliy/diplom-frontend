@@ -11,26 +11,30 @@ const b = block('optimization-page');
 export const OptimizationPage = () => {
     const {
         consoleLogs,
-        chartData, // Теперь это объект с данными графиков
+        chartData,
         isStreaming,
         error: streamError,
         connect: startStream,
         disconnect: stopStream,
         clearStreamData,
-        handleStreamMessage, // Получаем обработчик сообщений
-        setError: setStreamError, // Получаем функцию установки ошибки
+        handleStreamMessage,
+        setError: setStreamError,
     } = useOptimizationStream();
 
     useEffect(() => {
         return () => {
-            stopStream(); // Убедимся, что стрим остановлен при размонтировании компонента
+            stopStream();
         };
     }, [stopStream]);
 
     const handleFormSubmitSuccess = () => {
         console.log('Form submitted successfully. Preparing for SSE stream...');
-        clearStreamData(); // Очищаем предыдущие данные перед новым запуском
-        startStream(); // Сообщаем хуку useOptimizationStream, что стриминг ожидается
+        startStream();
+    };
+
+    const handleFormBeforeSubmit = () => {
+        console.log('Clearing previous stream data before new submission...');
+        clearStreamData();
     };
 
     return (
@@ -38,7 +42,7 @@ export const OptimizationPage = () => {
             <div className={b('left-panel')}>
                 <ResultsDisplay
                     consoleLogs={consoleLogs}
-                    chartData={chartData} // Передаем объект, содержащий все данные графиков
+                    chartData={chartData}
                     isStreaming={isStreaming}
                     streamError={streamError}
                 />
@@ -47,11 +51,11 @@ export const OptimizationPage = () => {
             <div className={b('right-panel')}>
                 <OptimizationForm
                     onSubmitSuccess={handleFormSubmitSuccess}
-                    // Передаем обработчики из useOptimizationStream в OptimizationForm
+                    onBeforeSubmit={handleFormBeforeSubmit}
                     onSseMessage={handleStreamMessage}
                     onSseError={(err) => setStreamError(err.message)}
-                    onSseOpen={startStream} // Переименован для ясности
-                    onSseClose={stopStream} // Добавляем обработчик закрытия стрима
+                    onSseOpen={startStream}
+                    onSseClose={stopStream}
                 />
             </div>
         </Flex>

@@ -3,7 +3,7 @@ import {formStructureConfig, getInitialFormValues} from '@/entities/Optimization
 
 interface UseOptimizationFormProps {
     onSubmitSuccess?: () => void;
-    // Изменен тип на `any` для передачи распарсенных данных
+    onBeforeSubmit?: () => void;
     onSseMessage?: (data: any) => void;
     onSseError?: (error: Error) => void;
     onSseOpen?: () => void;
@@ -12,6 +12,7 @@ interface UseOptimizationFormProps {
 
 export const useOptimizationForm = ({
     onSubmitSuccess,
+    onBeforeSubmit,
     onSseMessage,
     onSseError,
     onSseOpen,
@@ -44,6 +45,8 @@ export const useOptimizationForm = ({
             alert('Пожалуйста, выберите .zip файл с датасетом.');
             return;
         }
+
+        onBeforeSubmit?.();
 
         setIsSubmitting(true);
         const controller = new AbortController();
@@ -100,7 +103,7 @@ export const useOptimizationForm = ({
                 throw err;
             }
 
-            onSseOpen?.(); // Сообщаем, что стриминг начался
+            onSseOpen?.();
 
             const reader = response.body?.getReader();
             if (!reader) {
@@ -116,27 +119,26 @@ export const useOptimizationForm = ({
             while (true) {
                 const {done, value} = await reader.read();
                 if (done) {
-                    onSseClose?.(); // Сообщаем, что стриминг завершился
+                    onSseClose?.();
                     break;
                 }
 
                 buffer += decoder.decode(value, {stream: true});
-                const messages = buffer.split('\n\n'); // SSE сообщения разделяются двумя символами новой строки
+                const messages = buffer.split('\n\n');
                 for (let i = 0; i < messages.length - 1; i++) {
-                    // Обрабатываем все, кроме последнего (потенциально неполного) сообщения
                     const message = messages[i];
                     if (message.startsWith('data: ')) {
                         try {
                             const jsonString = message.substring('data: '.length);
                             const parsedData = JSON.parse(jsonString);
-                            onSseMessage?.(parsedData); // Вызываем колбэк с распарсенными данными
+                            onSseMessage?.(parsedData);
                         } catch (parseError) {
                             console.error('Ошибка парсинга SSE сообщения:', parseError, message);
                             onSseError?.(new Error('Ошибка парсинга SSE сообщения.'));
                         }
                     }
                 }
-                buffer = messages[messages.length - 1]; // Оставляем неполную часть буфера
+                buffer = messages[messages.length - 1];
             }
 
             onSubmitSuccess?.();
@@ -144,7 +146,7 @@ export const useOptimizationForm = ({
             if (error.name === 'AbortError') {
                 console.log('Запрос был прерван');
                 onSseError?.(new Error('Запрос был прерван клиентом.'));
-                onSseClose?.(); // В случае отмены, также сообщаем о закрытии
+                onSseClose?.();
             } else {
                 console.error('Не удалось отправить форму или обработать SSE:', error);
                 alert('Ошибка при отправке формы или получении данных: ' + error.message);
@@ -159,6 +161,7 @@ export const useOptimizationForm = ({
         selectedFile,
         selectedDatasetFile,
         onSubmitSuccess,
+        onBeforeSubmit,
         onSseMessage,
         onSseError,
         onSseOpen,
