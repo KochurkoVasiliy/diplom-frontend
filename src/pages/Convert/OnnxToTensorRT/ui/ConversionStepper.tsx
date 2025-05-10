@@ -15,7 +15,7 @@
 } from '@gravity-ui/uikit';
 import block from 'bem-cn-lite';
 import React from 'react';
-import {Gear} from '@gravity-ui/icons'; // Example icon for processing
+import {Gear} from '@gravity-ui/icons';
 
 const b = block('convert-stepper');
 
@@ -27,13 +27,24 @@ type FormState = {
     cudaGraph: boolean;
 };
 
+type ConversionResult = {
+    status: 'success' | 'error';
+    message: string;
+    output?: string;
+    logs?: {
+        args?: string[];
+        returncode?: number;
+        stdout?: string;
+        stderr?: string;
+    };
+};
+
 const precisions = ['fp32', 'fp16', 'bf16', 'int8', 'fp8', 'best'].map((v) => ({
     value: v,
     content: v,
 }));
 
-// Define the backend endpoint URL (adjust if your backend is on a different URL/port)
-const BACKEND_URL = 'http://localhost:8000'; // Replace with your FastAPI server address
+const BACKEND_URL = 'http://localhost:8000';
 
 export const ConversionStepper = () => {
     const [step, setStep] = React.useState(0);
@@ -45,21 +56,20 @@ export const ConversionStepper = () => {
         cudaGraph: false,
     });
 
-    // State for upload status
     const [isUploading, setIsUploading] = React.useState(false);
     const [uploadError, setUploadError] = React.useState<string | null>(null);
-    const [uploadSuccess, setUploadSuccess] = React.useState<string | null>(null);
+    // const [uploadSuccess, setUploadSuccess] = React.useState<string | null>(null);
+
+    const [conversionResult, setConversionResult] = React.useState<ConversionResult | null>(null);
 
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const update = React.useCallback(<K extends keyof FormState>(key: K, value: FormState[K]) => {
         setForm((f) => ({...f, [key]: value}));
-        // Reset status messages when form changes
         setUploadError(null);
-        setUploadSuccess(null);
+        setConversionResult(null);
     }, []);
 
-    // Effect for automatic filling of output file name
     React.useEffect(() => {
         if (form.file && form.outName === '') {
             const baseFileName = form.file.name.replace(/\.onnx$/i, '');
@@ -68,11 +78,10 @@ export const ConversionStepper = () => {
         }
     }, [form.file, form.outName, update]);
 
-    // Effect to clear state messages when step changes
     React.useEffect(() => {
         setUploadError(null);
-        setUploadSuccess(null);
-        setIsUploading(false); // Also reset uploading status
+        setConversionResult(null);
+        setIsUploading(false);
     }, [step]);
 
     const onChooseClick = () => {
@@ -82,7 +91,6 @@ export const ConversionStepper = () => {
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const f = e.target.files?.[0] ?? null;
         update('file', f);
-        // If file is cleared, also clear outName if it looks like it was auto-generated
         if (!f && form.outName !== '') {
             if (form.outName.endsWith('_tensorrt.trt')) {
                 update('outName', '');
@@ -101,7 +109,7 @@ export const ConversionStepper = () => {
 
         setIsUploading(true);
         setUploadError(null);
-        setUploadSuccess(null);
+        setConversionResult(null);
 
         const formData = new FormData();
         // Append the file
@@ -109,32 +117,29 @@ export const ConversionStepper = () => {
         // Append other form fields
         formData.append('out_name', form.outName);
         formData.append('precision', form.precision);
-        formData.append('opt_level', form.optLevel.toString()); // FormData values are typically strings
-        formData.append('cuda_graph', form.cudaGraph.toString()); // Convert boolean to string
+        formData.append('opt_level', form.optLevel.toString());
+        formData.append('cuda_graph', form.cudaGraph.toString());
 
         try {
             const response = await fetch(`${BACKEND_URL}/convert/`, {
-                // Use the backend endpoint
                 method: 'POST',
-                body: formData, // fetch automatically sets Content-Type: multipart/form-data
+                body: formData,
             });
 
-            if (!response.ok) {
-                // Handle HTTP errors (e.g., 400, 500)
-                const errorData = await response.json(); // Assuming backend sends JSON errors
-                throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
-            }
+            const result: ConversionResult = await response.json();
+            setConversionResult(result);
 
-            const result = await response.json(); // Assuming backend sends a success JSON message
-            setUploadSuccess(result.message || 'Конвертация успешно запущена.');
-            // Optionally, process the result if the backend returns useful info
-            console.log('Backend response:', result);
+            if (!response.ok || result.status === 'error') {
+                setUploadError(result.message || `Ошибка конвертации. Статус: ${response.status}`);
+            } else {
+                console.log('Backend response:', result);
+            }
         } catch (error: any) {
-            // Catching any error from fetch or response processing
             console.error('Upload failed:', error);
-            setUploadError(`Ошибка конвертации: ${error.message}`);
+            setUploadError(`Ошибка сети или обработки ответа: ${error.message}`);
+            setConversionResult(null);
         } finally {
-            setIsUploading(false); // Always stop loading state
+            setIsUploading(false);
         }
     };
 
@@ -180,9 +185,6 @@ export const ConversionStepper = () => {
                         >
                             Далее
                         </Button>
-                        {/* Display status messages at the end of step 0 if needed, though maybe better at step 2 */}
-                        {/* {uploadError && <Text color="danger">{uploadError}</Text>}
-                         {uploadSuccess && <Text color="success">{uploadSuccess}</Text>} */}
                     </Flex>
                 )}
 
@@ -259,36 +261,115 @@ export const ConversionStepper = () => {
                 {step === 2 && (
                     <Flex direction="column" gap="4" className={b('step-content')}>
                         <Text variant={'header-1'} as="h2">
-                            Проверка параметров
+                            Проверка параметров и запуск
                         </Text>
                         <Divider />
                         <Card view="filled" type="container" className={b('review-card')}>
-                            <pre className={b('review-json')}>
-                                {/* Display form data, showing file name instead of File object */}
-                                {JSON.stringify(
-                                    {
-                                        inputFile: form.file?.name || 'Не выбран',
-                                        outputName: form.outName,
-                                        precision: form.precision,
-                                        optimizationLevel: form.optLevel,
-                                        cudaGraphEnabled: form.cudaGraph,
-                                    },
-                                    null,
-                                    2,
-                                )}
-                            </pre>
+                            <Flex direction="column" gap="2">
+                                <Text variant="body-2">
+                                    Выбран файл:{' '}
+                                    <Text color="complementary">
+                                        {form.file?.name || 'Не выбран'}
+                                    </Text>
+                                </Text>
+                                <Text variant="body-2">
+                                    Имя выходного файла:{' '}
+                                    <Text color="complementary">
+                                        {form.outName || 'Не указано'}
+                                    </Text>
+                                </Text>
+                                <Text variant="body-2">
+                                    Точность: <Text color="complementary">{form.precision}</Text>
+                                </Text>
+                                <Text variant="body-2">
+                                    Уровень оптимизации:{' '}
+                                    <Text color="complementary">{form.optLevel}</Text>
+                                </Text>
+                                <Text variant="body-2">
+                                    CudaGraph:{' '}
+                                    <Text color="complementary">
+                                        {form.cudaGraph ? 'Включен' : 'Выключен'}
+                                    </Text>
+                                </Text>
+                            </Flex>
                         </Card>
 
-                        {/* Display upload status messages */}
                         {isUploading && (
                             <Flex direction="row" gap="2" alignItems="center">
                                 <Icon data={Gear} size={20} className={b('spinner')} />{' '}
-                                {/* Add a spinner/icon for loading */}
                                 <Text>Загрузка и обработка...</Text>
                             </Flex>
                         )}
                         {uploadError && <Text color="danger">{uploadError}</Text>}
-                        {uploadSuccess && <Text color="positive">{uploadSuccess}</Text>}
+
+                        {conversionResult && !isUploading && (
+                            <Flex direction="column" gap="2">
+                                <Text variant="header-2" as="h3">
+                                    Результат:
+                                </Text>
+                                <Card view="filled" type="container">
+                                    <Flex direction="column" gap="1">
+                                        <Text variant="body-2">
+                                            Статус:{' '}
+                                            <Text
+                                                color={
+                                                    conversionResult.status === 'success'
+                                                        ? 'positive'
+                                                        : 'danger'
+                                                }
+                                            >
+                                                {conversionResult.status}
+                                            </Text>
+                                        </Text>
+                                        <Text variant="body-2">
+                                            Сообщение: {conversionResult.message}
+                                        </Text>
+                                        {conversionResult.output && (
+                                            <Text variant="body-2">
+                                                Выходной файл: {conversionResult.output}
+                                            </Text>
+                                        )}
+                                    </Flex>
+                                </Card>
+
+                                {(conversionResult.logs?.stdout ||
+                                    conversionResult.logs?.stderr ||
+                                    conversionResult.logs?.args) && (
+                                    <Flex direction="column" gap="1">
+                                        <Text variant="header-2" as="h3">
+                                            Логи:
+                                        </Text>
+                                        <pre className={b('console-output')}>
+                                            {conversionResult.logs?.args && (
+                                                <Text variant={'code-1'} className={b('log-line')}>
+                                                    {`$ ${conversionResult.logs.args.join(' ')}\n`}
+                                                </Text>
+                                            )}
+                                            {conversionResult.logs?.stdout && (
+                                                <Text variant={'code-1'} className={b('log-line')}>
+                                                    {conversionResult.logs.stdout}
+                                                </Text>
+                                            )}
+                                            {conversionResult.logs?.stderr && (
+                                                <Text
+                                                    variant={'code-1'}
+                                                    className={b('log-line')}
+                                                    color="danger"
+                                                >
+                                                    {' '}
+                                                    {conversionResult.logs.stderr}
+                                                </Text>
+                                            )}
+                                            {conversionResult.logs?.returncode !== undefined && (
+                                                <Text variant={'code-1'} className={b('log-line')}>
+                                                    {`Return Code: ${conversionResult.logs.returncode}\n`}
+                                                </Text>
+                                            )}
+                                        </pre>
+                                    </Flex>
+                                )}
+                            </Flex>
+                        )}
 
                         <Flex
                             gap="3"
@@ -302,13 +383,12 @@ export const ConversionStepper = () => {
                             <Button
                                 view="action"
                                 size="l"
-                                onClick={handleStartConversion} // Call the submission handler
+                                onClick={handleStartConversion}
                                 disabled={
                                     !form.file || form.outName.trim().length === 0 || isUploading
-                                } // Disable if no file, no output name, or already uploading
+                                }
                             >
-                                {isUploading ? 'Обработка...' : 'Старт конвертации'}{' '}
-                                {/* Button text changes during upload */}
+                                {isUploading ? 'Обработка...' : 'Старт конвертации'}
                             </Button>
                         </Flex>
                     </Flex>

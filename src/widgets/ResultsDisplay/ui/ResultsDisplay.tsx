@@ -21,7 +21,7 @@ interface ResultsDisplayProps {
 }
 export const ResultsDisplay = ({
     consoleLogs,
-    chartData, // Деструктурируем chartData
+    chartData,
     isStreaming,
     streamError,
 }: ResultsDisplayProps) => {
@@ -38,7 +38,7 @@ export const ResultsDisplay = ({
                     value="chartsTab"
                     className={b('tab-panel', {active: activeTab === 'chartsTab'})}
                 >
-                    <MetricsCharts chartData={chartData} /> {/* Передаем chartData сюда */}
+                    <MetricsCharts chartData={chartData} />
                 </TabPanel>
                 <TabPanel
                     value="consoleTab"
@@ -46,7 +46,7 @@ export const ResultsDisplay = ({
                 >
                     <ConsoleOutput
                         logData={consoleLogs}
-                        isLoading={isStreaming} // Предполагаем, что стриминг = загрузка логов
+                        isLoading={isStreaming}
                         error={streamError}
                     />
                 </TabPanel>
